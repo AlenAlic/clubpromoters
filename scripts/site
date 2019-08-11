@@ -13,12 +13,8 @@ sudo apt -y upgrade
 echo "System updated================================"
 
 echo "Installing base dependencies=================="
-sudo apt -y install python3 python3-venv python3-dev mysql-server supervisor nginx git
+sudo apt -y install python3 python3-venv python3-dev mysql-server supervisor nginx
 echo "Base dependencies installed==================="
-
-echo "Downloading from Github======================="
-git clone https://github.com/AlenAlic/clubpromoters
-echo "Downloading complete=========================="
 
 
 echo "Installing python requirements================"

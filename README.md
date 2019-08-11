@@ -2,9 +2,14 @@
 
 clubpromoters.net website.
 
-# Installation
+## Installation
 
-Scripts and guides to install the site and email can be found in the '/scripts' folder.
+Install git and clone the repository.
+
+    sudo apt -y install git
+    git clone https://github.com/AlenAlic/clubpromoters
+
+Run the scripts from the `/scripts` folder.
 
 ### Scripts/Guides in order
 
