@@ -1,0 +1,113 @@
+#!/bin/bash
+
+
+website = alenalic.nl
+
+
+echo "Starting installation"
+
+
+echo "Updating system==============================="
+sudo apt -y update
+sudo apt -y upgrade
+echo "System updated================================"
+
+echo "Installing dkim==============================="
+sudo apt -y install opendkim opendkim-tools
+echo "dkim installed================================"
+
+
+echo "Configuring opendkim=========================="
+
+echo "Configuring opendkim.conf====================="
+sudo cp /etc/opendkim.conf /etc/opendkim.conf.old
+sudo bash -c 'cat > /etc/opendkim.conf' << EOL
+# Auto on failure (at most 10 times per hour)
+AutoRestart             Yes
+AutoRestartRate         10/1h
+# Gives full access to the user in UserID
+UMask                   002
+# Logging
+Syslog                  yes
+SyslogSuccess           Yes
+LogWhy                  Yes
+
+# Message signing method
+Canonicalization        relaxed/simple
+
+# Trusted hosts
+ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts
+InternalHosts           refile:/etc/opendkim/TrustedHosts
+# Maps key names to signing keys
+KeyTable                refile:/etc/opendkim/KeyTable
+# Signatures
+SigningTable            refile:/etc/opendkim/SigningTable
+
+# Milter acts as signer (s) and verifier (v)
+Mode                    sv
+# Pid number file
+PidFile                 /var/run/opendkim/opendkim.pid
+# Signature algorithm
+SignatureAlgorithm      rsa-sha256
+
+# Process owner
+UserID                  opendkim:opendkim
+
+# Communication channel with postfix
+Socket                  inet:12301@localhost
+
+# From original file
+OversignHeaders         From
+TrustAnchorFile         /usr/share/dns/root.key
+EOL
+echo "Configuring opendkim.conf complete============="
+
+echo "Connecting milter to postfix==================="
+sudo sed -i '/SOCKET.*/c\SOCKET="inet:12301@localhost"' /etc/default/opendkim
+sudo sed -i '/#milter_protocol.*/c\milter_protocol = 2' /etc/postfix/main.cf
+sudo sed -i '/#milter_default_action.*/c\milter_default_action = accept' /etc/postfix/main.cf
+sudo sed -i '/#smtpd_milters.*/c\smtpd_milters = inet:localhost:12301' /etc/postfix/main.cf
+sudo sed -i '/#non_smtpd_milters.*/c\non_smtpd_milters = inet:localhost:12301' /etc/postfix/main.cf
+echo "Connecting milter to postfix==================="
+
+echo "Creating TrustedHosts=========================="
+sudo mkdir /etc/opendkim
+sudo bash -c 'cat > /etc/opendkim/TrustedHosts' << EOL
+127.0.0.1
+localhost
+192.168.0.1/24
+
+*.$website
+EOL
+echo "Created TrustedHosts==========================="
+
+echo "Creating KeyTable=============================="
+sudo bash -c 'cat > /etc/opendkim/KeyTable' << EOL
+mail._domainkey.$website $website:mail:/etc/opendkim/keys/$website/mail.private
+EOL
+echo "Created KeyTable==============================="
+
+echo "Creating SigningTable=========================="
+sudo bash -c 'cat > /etc/opendkim/SigningTable' << EOL
+*@$website mail._domainkey.$website
+EOL
+echo "Created SigningTable==========================="
+
+echo "Generating key================================="
+sudo mkdir /etc/opendkim/keys
+sudo mkdir /etc/opendkim/keys/$website
+cd /etc/opendkim/keys/$website
+sudo opendkim-genkey -s mail -d $website
+sudo chown opendkim:opendkim mail.private
+echo "Generated key=================================="
+
+echo "Reloading services============================="
+sudo service postfix restart
+sudo service opendkim restart
+echo "Configuring opendkim complete=================="
+
+
+echo "Open mail.txt and copy the DKIM key to your public DNS"
+echo "sudo nano -$ mail.txt"
+echo "Name: mail._domainkey"
+echo "Value: v=DKIM1;..."

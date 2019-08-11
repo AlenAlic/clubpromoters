@@ -1,0 +1,284 @@
+#!/bin/bash
+
+
+website=alenalic.nl
+pwd=$(python3 -c "import uuid; print(uuid.uuid4().hex)")
+emailpwd=$(python3 -c "import uuid; print(uuid.uuid4().hex)")
+
+echo $website
+echo $pwd
+
+
+echo "Starting installation"
+
+
+echo "Updating system==============================="
+sudo apt -y update
+sudo apt -y upgrade
+echo "System updated================================"
+
+echo "Installing mailutils=========================="
+sudo apt -y install mailutils postfix-mysql mysql-server dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql
+echo "Mailutils installed==========================="
+
+
+echo "Configuring mysql============================="
+
+echo "Create database and user======================"
+sudo mysql<<EOF
+CREATE DATABASE mailserver CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'mailuser'@'localhost' IDENTIFIED BY '$pwd';
+GRANT ALL PRIVILEGES ON mailserver.* TO 'mailuser'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+echo "Created database and user====================="
+
+echo "Create tables================================="
+sudo mysql<<EOF
+USE mailserver;
+CREATE TABLE \`virtual_domains\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`name\` varchar(50) NOT NULL,
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE \`virtual_users\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`domain_id\` int(11) NOT NULL,
+  \`password\` varchar(106) NOT NULL,
+  \`email\` varchar(100) NOT NULL,
+  PRIMARY KEY (\`id\`),
+  UNIQUE KEY \`email\` (\`email\`),
+  FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE \`virtual_aliases\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`domain_id\` int(11) NOT NULL,
+  \`source\` varchar(100) NOT NULL,
+  \`destination\` varchar(100) NOT NULL,
+  PRIMARY KEY (\`id\`),
+  FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+EOF
+echo "Created tables================================"
+
+echo "Add virtual domain============================"
+sudo mysql<<EOF
+INSERT INTO \`mailserver\`.\`virtual_domains\`
+  (\`id\` ,\`name\`)
+VALUES
+  ('1', '$website');
+EOF
+echo "Added virtual domain=========================="
+
+echo "Add virtual users============================="
+sudo mysql<<EOF
+INSERT INTO \`mailserver\`.\`virtual_users\`
+  (\`id\`, \`domain_id\`, \`password\` , \`email\`)
+VALUES
+  ('1', '1', ENCRYPT('$emailpwd', CONCAT('\$6\$', SUBSTRING(SHA(RAND()), -16))), 'info@$website');
+EOF
+echo "Added virtual users==========================="
+
+echo "Add virtual aliases==========================="
+sudo mysql<<EOF
+INSERT INTO \`mailserver\`.\`virtual_aliases\`
+  (\`id\`, \`domain_id\`, \`source\`, \`destination\`)
+VALUES
+  ('1', '1', 'alias@$website', 'info@$website'),
+  ('2', '1', '@$website', 'info@$website');
+EOF
+echo "Added virtual aliases========================="
+
+
+echo "Configuring postfix==========================="
+sudo bash -c 'cat > /etc/postfix/main.cf' << EOL
+myhostname = $website
+mydomain = \$myhostname
+smtpd_banner = \$myhostname ESMTP \$mail_name (\$mail_version)
+
+# Domain for outbound mail
+myorigin = \$myhostname
+# What domains to recieve mail from
+mydestination = localhost
+
+# Delivery method: direct
+relayhost =
+# Trusted SMPT clients
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+# Network interfaces/protocols
+inet_interfaces = all
+inet_protocols = all
+
+# Do NOT append @$website to sent emails, this is the MUA's job
+append_dot_mydomain = no
+# Compatibility level
+compatibility_level = 2
+
+# Mailbox unlimited size
+mailbox_size_limit = 0
+# Do not notify system of new mail
+biff = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/letsencrypt/live/$website/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/$website/privkey.pem
+smtpd_use_tls=yes
+smtpd_tls_auth_only = yes
+smtp_tls_security_level = may
+smtpd_tls_security_level = may
+smtpd_sasl_security_options = noanonymous, noplaintext
+smtpd_sasl_tls_security_options = noanonymous
+
+# Authentication
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+
+# Restrictions
+smtpd_helo_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_invalid_helo_hostname,
+        reject_non_fqdn_helo_hostname
+smtpd_recipient_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_non_fqdn_recipient,
+        reject_unknown_recipient_domain,
+        reject_unlisted_recipient,
+        reject_unauth_destination
+smtpd_sender_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_non_fqdn_sender,
+        reject_unknown_sender_domain
+smtpd_relay_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        defer_unauth_destination
+
+# Aliases
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+# Handing off local delivery to Dovecot's LMTP, and telling it where to store mail
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+
+# Virtual domains, users, and aliases
+virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf
+virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf,
+        mysql:/etc/postfix/mysql-virtual-email2email.cf
+
+# Even more Restrictions and MTA params
+disable_vrfy_command = yes
+strict_rfc821_envelopes = yes
+#smtpd_etrn_restrictions = reject
+#smtpd_reject_unlisted_sender = yes
+#smtpd_reject_unlisted_recipient = yes
+smtpd_delay_reject = yes
+smtpd_helo_required = yes
+smtp_always_send_ehlo = yes
+#smtpd_hard_error_limit = 1
+smtpd_timeout = 30s
+smtp_helo_timeout = 15s
+smtp_rcpt_timeout = 15s
+smtpd_recipient_limit = 40
+minimal_backoff_time = 180s
+maximal_backoff_time = 3h
+
+# Reply Rejection Codes
+invalid_hostname_reject_code = 550
+non_fqdn_reject_code = 550
+unknown_address_reject_code = 550
+unknown_client_reject_code = 550
+unknown_hostname_reject_code = 550
+unverified_recipient_reject_code = 550
+unverified_sender_reject_code = 550
+
+# DKIM milter settings
+#milter_protocol = 2
+#milter_default_action = accept
+#smtpd_milters = inet:localhost:12301
+#non_smtpd_milters = inet:localhost:12301
+EOL
+echo "Configured postfix============================"
+
+echo "Configuring virutal mappings=================="
+echo "Configuring virutal mailbox domains==========="
+sudo bash -c 'cat > /etc/postfix/mysql-virtual-mailbox-domains.cf' << EOL
+user = mailuser
+password = $pwd
+hosts = 127.0.0.1
+dbname = mailserver
+query = SELECT 1 FROM virtual_domains WHERE name='%s'
+EOL
+echo "Configuring virutal mailboxes================="
+sudo bash -c 'cat > /etc/postfix/mysql-virtual-mailbox-maps.cf' << EOL
+user = mailuser
+password = $pwd
+hosts = 127.0.0.1
+dbname = mailserver
+query = SELECT 1 FROM virtual_users WHERE email='%s'
+EOL
+echo "Configuring virutal aliases==================="
+sudo bash -c 'cat > /etc/postfix/mysql-virtual-alias-maps.cf' << EOL
+user = mailuser
+password = $pwd
+hosts = 127.0.0.1
+dbname = mailserver
+query = SELECT destination FROM virtual_aliases WHERE source='%s'
+EOL
+echo "Configuring virutal email sending============="
+sudo bash -c 'cat > /etc/postfix/mysql-virtual-email2email.cf' << EOL
+user = mailuser
+password = $pwd
+hosts = 127.0.0.1
+dbname = mailserver
+query = SELECT email FROM virtual_users WHERE email='%s'
+EOL
+echo "Configured virutal mappings==================="
+
+echo "Reloading postfix============================="
+sudo service postfix reload
+sudo postmap -q $website mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf
+sudo postmap -q info@$website mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
+sudo postmap -q alias@$website mysql:/etc/postfix/mysql-virtual-alias-maps.cf
+sudo service postfix reload
+echo "Configuring postfix complete=================="
+
+
+echo "Backup original master.cf====================="
+sudo cp /etc/postfix/master.cf /etc/postfix/master.cf.orig
+echo "Backup original master.cf complete============="
+
+
+echo "Configuring firewall=========================="
+sudo apt -y install ufw
+sudo ufw allow imaps
+sudo ufw allow pop3s
+sudo ufw allow 587
+sudo ufw --force enable
+echo "Configuring firewall complete================="
+
+
+echo "Backup orininal dovecot files================="
+sudo cp /etc/dovecot/dovecot.conf /etc/dovecot/dovecot.conf.orig
+sudo cp /etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf.orig
+sudo cp /etc/dovecot/conf.d/10-auth.conf /etc/dovecot/conf.d/10-auth.conf.orig
+sudo cp /etc/dovecot/dovecot-sql.conf.ext /etc/dovecot/dovecot-sql.conf.ext.orig
+sudo cp /etc/dovecot/conf.d/10-master.conf /etc/dovecot/conf.d/10-master.conf.orig
+sudo cp /etc/dovecot/conf.d/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf.orig
+echo "Backup orininal dovecot files complete========"
+
+
+sudo bash -c 'cat > /etc/dovecot/dovecot-sql.conf.ext' << EOL
+driver = mysql
+connect = host=localhost dbname=mailserver user=mailuser password=$pwd
+default_pass_scheme = SHA512-CRYPT
+password_query = SELECT email as user, password FROM virtual_users WHERE email='%u';
+EOL
+
+
+echo "Postfix automatic setup complete=============="
+echo "Continue by following 'guides/postfix.md'====="

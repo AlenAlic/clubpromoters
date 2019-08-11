@@ -1,0 +1,179 @@
+#!/bin/bash
+
+
+website = alenalic.nl
+
+
+echo "Starting installation"
+
+
+echo "Updating system==============================="
+sudo apt -y update
+sudo apt -y upgrade
+echo "System updated================================"
+
+echo "Installing base dependencies=================="
+sudo apt -y install python3 python3-venv python3-dev mysql-server supervisor nginx git
+echo "Base dependencies installed==================="
+
+echo "Downloading from Github======================="
+git clone https://github.com/AlenAlic/clubpromoters
+echo "Downloading complete=========================="
+
+
+echo "Installing python requirements================"
+cd clubpromoters
+python3 -m venv venv
+source venv/bin/activate
+pip install pip --upgrade
+pip install setuptools --upgrade
+pip install -r requirements.txt
+pip install gunicorn
+echo "Python requirements installed================="
+
+
+echo "Generating secret key and database password==="
+key=$(python3 -c "import uuid; print(uuid.uuid4().hex)")
+pwd=$(python3 -c "import uuid; print(uuid.uuid4().hex)")
+echo "Generated secret key and database password===="
+
+
+echo "Generating /instance/config file=============="
+sudo bash -c 'cat > instance/config.py' << EOL
+ENV = 'production'
+DEBUG = False
+SECRET_KEY = '$key'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://clubpromoters:$pwd@localhost:3306/clubpromoters?charset=utf8mb4'
+SQLALCHEMY_ECHO = False
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_RECORD_QUERIES = False
+
+
+MAIL_SERVER = '$website'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'no-reply@$website'
+MAIL_PASSWORD = ''
+ADMINS = ['']
+
+
+MOLLIE_API_KEY = ""
+EOL
+echo "Generated /instance/config file==============="
+
+
+echo "Storing FLASK_APP variable===================="
+export FLASK_APP=run.py
+echo "export FLASK_APP=run.py" >> ~/.profile
+echo "Stored FLASK_APP variable====================="
+
+
+echo "Create database and user======================"
+sudo mysql<<EOF
+CREATE DATABASE clubpromoters CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'clubpromoters'@'localhost' IDENTIFIED BY '$pwd';
+GRANT ALL PRIVILEGES ON clubpromoters.* TO 'clubpromoters'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+echo "Created database and user====================="
+
+
+echo "Creating website admin========================"
+flask db upgrade
+echo "Admin email?"
+read adminmail
+echo "Admin password"
+read adminpwd
+echo "Database created=============================="
+flask shell<<EOF
+create_admin('$adminmail', '$adminpwd')
+EOF
+echo "Admin account created========================="
+
+
+echo "Create supervisor instance of site============"
+sudo bash -c 'cat > /etc/supervisor/conf.d/clubpromoters.conf' << EOL
+[program:clubpromoters]
+command=$HOME/clubpromoters/venv/bin/gunicorn -b 127.0.0.1:8000 -w 2 run:app
+directory=$HOME/clubpromoters
+user=$USER
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+EOL
+sudo supervisorctl reload
+echo "Supervisor instance of site created==========="
+
+
+echo "Installing SSL certificate===================="
+sudo apt install -y software-properties-common
+sudo add-apt-repository -y universe
+sudo add-apt-repository -y ppa:certbot/certbot
+sudo apt install -y certbot python-certbot-nginx
+sudo certbot certonly --nginx
+#read email
+#sudo certbot certonly --manual --preferred-challenges=dns --email $email --server https://acme-v02.api.letsencrypt.org/directory --agree-tos -d $website -d *.$website
+echo "Installing SSL certificate complete==========="
+
+
+echo "Configuring Nginx============================="
+if test -f "/etc/nginx/conf.d/default" 
+then
+sudo rm /etc/nginx/conf.d/default
+fi
+
+sudo bash -c 'cat > /etc/nginx/conf.d/$website.conf' << EOL
+server {
+
+	listen 443 ssl http2 default_server;
+	server_name $website;
+
+    root $HOME/clubpromoters/clubpromoters/static;
+    index index.html;
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	#location / {
+    #    proxy_pass http://127.0.0.1:8000;
+    #    proxy_redirect off;
+    #    proxy_set_header Host $http_host;
+    #    proxy_set_header X-Real-IP $remote_addr;
+    #    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #}
+
+    #location /static {
+    #    alias /home/$USER/clubpromoters/clubpromoters/static;
+    #    expires 30d;
+    #}
+
+    access_log /var/log/$website_access.log;
+    error_log /var/log/$website_error.log;
+
+    ssl_certificate /etc/letsencrypt/live/$website/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$website/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
+
+}
+server {
+    server_name *.$website;
+    return 301 https://$host$request_uri;
+}
+EOL
+echo "Configuring Nginx complete===================="
+
+
+echo "Configuring firewall=========================="
+sudo apt -y install ufw
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow ssh
+sudo ufw --force enable
+echo "Configuring firewall complete================="
+
+
+echo "Website setup complete========================"
+echo "Continue by running 'scripts/postfix'========="
