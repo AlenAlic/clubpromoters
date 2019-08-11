@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-website=alenalic.nl
+website=clubpromoters.net
 
 
 echo "Starting installation"
@@ -25,6 +25,8 @@ pip install pip --upgrade
 pip install setuptools --upgrade
 pip install -r requirements.txt
 pip install gunicorn
+deactivate
+cd
 echo "Python requirements installed================="
 
 
@@ -159,6 +161,7 @@ server {
     return 301 https://$host$request_uri;
 }
 EOL
+sudo service nginx reload
 echo "Configuring Nginx complete===================="
 
 

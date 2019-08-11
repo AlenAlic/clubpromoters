@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-website = alenalic.nl
+website=clubpromoters.net
 
 
 echo "Starting installation"
