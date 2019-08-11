@@ -1,0 +1,251 @@
+.flex-direction-column {
+  flex-direction: column; }
+
+.clickable {
+  cursor: pointer; }
+
+body {
+  min-height: 100vh; }
+
+.login-container, .single-card-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0e2238; }
+  .login-container .login-card, .single-card-container .login-card {
+    width: 100%;
+    max-width: 500px; }
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.disabled {
+  cursor: not-allowed; }
+
+.single-card-container * {
+  width: 100%;
+  max-width: 500px; }
+
+.main-content {
+  padding-left: 0;
+  background-color: #f8f9fa;
+  width: 100%;
+  height: 100%; }
+
+@media (min-width: 992px) {
+  .main-content {
+    padding-left: 320px; } }
+
+.navbar-default {
+  min-height: 4rem; }
+
+.sidebar {
+  min-height: 0;
+  width: 100%;
+  margin-left: 0.75rem;
+  margin-top: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  -webkit-transition: margin, height 1.25s ease-out;
+  -moz-transition: margin, height 1.25s ease-out;
+  -o-transition: margin, height 1.25s ease-out;
+  transition: margin, height 1.25s ease-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 1100;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8); }
+  .sidebar.show {
+    display: block;
+    min-height: auto;
+    height: auto;
+    padding-top: 0.5rem;
+    border-radius: 0.5rem; }
+    .sidebar.show .sidebar-brand {
+      justify-content: space-between;
+      padding-right: 2rem; }
+    .sidebar.show .sidebar-link {
+      width: auto; }
+  .sidebar .sidebar-item, .sidebar .sidebar-nav {
+    list-style: none; }
+  .sidebar .sidebar-item, .sidebar .sidebar-heading {
+    padding: .625rem 1.75rem; }
+  .sidebar .sidebar-brand {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding-left: 1.75rem;
+    font-size: 1.25rem; }
+    .sidebar .sidebar-brand .sidebar-link {
+      color: #0e2238; }
+    .sidebar .sidebar-brand .sidebar-link:focus, .sidebar .sidebar-brand .sidebar-link:hover {
+      text-decoration: none;
+      color: #5e72e4; }
+  .sidebar .sidebar-link {
+    color: #0e2238;
+    width: 100%;
+    display: block; }
+  .sidebar .sidebar-link:focus, .sidebar .sidebar-link:hover {
+    text-decoration: none;
+    color: #5e72e4; }
+  .sidebar .sidebar-nav {
+    padding-left: 0; }
+    .sidebar .sidebar-nav .sidebar-link > i {
+      min-width: 2.25rem; }
+  .sidebar .sidebar-heading {
+    font-size: .75rem;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    letter-spacing: .04em;
+    text-transform: uppercase; }
+
+@media (min-width: 992px) {
+  .sidebar-toggler {
+    display: none; }
+  .sidebar {
+    min-height: 100vh;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    max-width: 320px;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    z-index: 1100;
+    background-color: #fff;
+    -webkit-box-shadow: -2px 0 6px 0 rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: -2px 0 6px 0 rgba(0, 0, 0, 0.8);
+    box-shadow: -2px 0 6px 0 rgba(0, 0, 0, 0.8); }
+    .sidebar.show {
+      display: block;
+      min-height: 100vh;
+      height: auto;
+      padding-top: 0;
+      border-radius: 0; }
+    .sidebar .sidebar-item, .sidebar .sidebar-nav {
+      list-style: none; }
+    .sidebar .sidebar-item, .sidebar .sidebar-heading {
+      padding: .625rem 1.75rem; }
+    .sidebar .sidebar-brand {
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      padding-left: 1.75rem;
+      font-size: 1.25rem; }
+      .sidebar .sidebar-brand .sidebar-link {
+        color: #0e2238; }
+      .sidebar .sidebar-brand .sidebar-link:focus, .sidebar .sidebar-brand .sidebar-link:hover {
+        text-decoration: none;
+        color: #5e72e4; }
+      .sidebar .sidebar-brand .sidebar-close {
+        display: none; }
+    .sidebar .sidebar-link {
+      color: #0e2238;
+      width: 100%;
+      display: block; }
+    .sidebar .sidebar-link:focus, .sidebar .sidebar-link:hover {
+      text-decoration: none;
+      color: #5e72e4; }
+    .sidebar .sidebar-nav {
+      padding-left: 0; }
+      .sidebar .sidebar-nav .sidebar-link > i {
+        min-width: 2.25rem; }
+    .sidebar .sidebar-heading {
+      font-size: .75rem;
+      padding-top: .25rem;
+      padding-bottom: .25rem;
+      letter-spacing: .04em;
+      text-transform: uppercase; } }
+
+.party-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 1100px;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 2px solid black;
+  max-width: 1100px;
+  margin: 0 auto; }
+  .party-card .party-img {
+    border: 2px solid black;
+    height: 400px; }
+  .party-card .party-info {
+    display: grid;
+    grid-template-columns: 6rem 12rem auto 14rem;
+    text-align: center; }
+    .party-card .party-info .party-date {
+      border: 2px solid black;
+      font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; }
+      .party-card .party-info .party-date .party-month {
+        font-size: 2rem; }
+      .party-card .party-info .party-date .party-day {
+        font-size: 3rem; }
+    .party-card .party-info .party-info-logo {
+      border: 2px solid black; }
+      .party-card .party-info .party-info-logo .party-time {
+        font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+        border-bottom: 2px solid black; }
+      .party-card .party-info .party-info-logo .party-logo {
+        border-top: 2px solid black;
+        height: 96px; }
+    .party-card .party-info .party-venue {
+      border: 2px solid black;
+      font-size: 5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; }
+      .party-card .party-info .party-venue svg {
+        height: 120px; }
+    .party-card .party-info .party-buy {
+      font-size: 1.25rem;
+      border: 2px solid black; }
+      .party-card .party-info .party-buy .party-buy-tickets {
+        padding: 0.5rem 0.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; }
+        .party-card .party-info .party-buy .party-buy-tickets .tables-container {
+          display: flex;
+          justify-content: space-between; }
+
+.tickets-container {
+  display: flex;
+  justify-content: space-between; }
+  .tickets-container .party-counter .party-amount {
+    max-width: 2.5rem;
+    width: auto;
+    border: 1px solid gray;
+    margin: 0 0.75rem;
+    padding: 0 0.25rem;
+    text-align: center; }
+
+.left-right-split-container {
+  display: flex;
+  justify-content: space-between; }
+
+.purchase-order {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center; }
+  .purchase-order .card {
+    min-width: 300px; }

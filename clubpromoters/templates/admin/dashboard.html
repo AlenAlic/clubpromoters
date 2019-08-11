@@ -1,0 +1,42 @@
+{% extends 'admin_base.html' %}
+
+{% block app_content %}
+    <div class="{{ dashboard_grid }}">
+        {{ dashboard_page(
+            url='admin.index',
+            image='<i class="fas fa-user-shield"></i>',
+            title='Database',
+            text="Access to the database through Flask-Admin."
+        ) }}
+        {{ dashboard_page(
+            url='self_admin.setup',
+            image='<i class="fas fa-tools"></i>',
+            title='Setup',
+            text="Create the organizer account and anything else that is required to set up the website."
+        ) }}
+        {{ dashboard_page(
+            url='self_admin.test_data',
+            image='<i class="fas fa-vial"></i>',
+            title='Test data',
+            text="Create test data."
+        ) }}
+        {{ dashboard_page(
+            url='self_admin.users',
+            image='<i class="fas fa-user"></i>',
+            title='Users',
+            text="View user activity and manage user accounts."
+        ) }}
+        {{ dashboard_page(
+            url='self_admin.switch_organizer',
+            image='<i class="fas fa-user-tie"></i>',
+            title='Organizer',
+            text="Switch to the organizer acount."
+        ) }}
+        {{ dashboard_page(
+            url='self_admin.test_emails',
+            image='<i class="fas fa-mail-bulk"></i>',
+            title='Test emails',
+            text="Preview the emails that are being sent."
+        ) }}
+    </div>
+{% endblock %}

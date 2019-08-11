@@ -1,0 +1,76 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div>
+        <h1>Inactive parties</h1>
+        <input type="search" id="search" class="form-control" placeholder="Search by name..." onkeyup="filterCards()">
+        <label for="search"></label>
+    </div>
+    <div class="mb-2 d-grid grid-template-columns-xl-2 grid-column-gap-3 grid-row-gap-3">
+        {% for party in g.inactive_parties %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ party.title }}</h4>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Date:</span>
+                        <span class="text-right">
+                            {{ party.party_start_datetime.strftime("%A") }} {{ party.party_start_datetime.strftime("%b") }} {{ party.party_start_datetime.strftime("%d") }}<br/>
+                            {{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Tickets available:</span>
+                        <span class="text-right">{{ party.num_available_tickets }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Ticket price:</span>
+                        <span class="text-right">{{ g.values.format_euro(party.ticket_price) }}</span>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modal-{{ party.party_id }}">Start ticket sale</button>
+                    </div>
+                </div>
+                <div class="modal" tabindex="-1" role="dialog" id="modal-{{ party.party_id }}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Start ticket sale</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you wish to start the ticket sale for {{ party.title }}?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                                    <button type="submit" class="btn btn-primary" name="start_ticket_sale" value="{{ party.party_id }}">Yes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        const search = document.getElementById('search');
+
+        const filterCards = () => {
+            const cards = document.querySelectorAll(".card");
+            let card, cardView;
+            cards.forEach(card => {
+                let title = card.querySelector(".card-title");
+                if (title.innerHTML.toUpperCase().indexOf(search.value.toUpperCase()) > -1) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+    </script>
+{% endblock %}

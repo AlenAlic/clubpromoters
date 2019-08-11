@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block html_attribs %}
+style="height:100vh"
+{% endblock html_attribs %}
+
+{% block body_attribs %}
+    {{ super() }}
+    style="height:100vh"
+{% endblock body_attribs %}
+
+{% block content %}
+    <div style="display: grid; height: 100%">
+        <div style="margin: auto">
+        {% if g.active_parties|length > 0 %}
+            {% with party=g.active_parties[0] %}
+                {% include "organizer/_dummy_party_card.html" %}
+            {% endwith %}
+        {% endif %}
+        </div>
+        <form class="form w-25 text-center" style="justify-self: center;" method="POST" enctype="multipart/form-data" novalidate>
+            <div class="form-group">
+                <label for="code">Code</label>
+                <input type="number" class="form-control" id="code" name="code" maxlength="8" pattern="^[0-9]{4}$">
+            </div>
+            <button type="submit" class="btn btn-primary">Enter</button>
+        </form>
+    </div>
+    <div style="display: none; width: 100vw; height: 100vh;">
+
+    </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div>
+        <h1>Income per party</h1>
+        <input type="search" id="search" class="form-control" placeholder="Search by name..." onkeyup="filterCards()">
+        <label for="search"></label>
+    </div>
+    <div class="mb-2 d-grid grid-column-gap-3 grid-row-gap-3">
+        {% for party in parties %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ party.title }}</h4>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Date:</span>
+                        <span class="text-right">
+                            {{ party.party_start_datetime.strftime("%A") }} {{ party.party_start_datetime.strftime("%b") }} {{ party.party_start_datetime.strftime("%d") }}<br/>
+                            {{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Tickets sold:</span>
+                        <span class="text-right">{{ party.sold_tickets() }} / {{ party.num_available_tickets }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Income generated:</span>
+                        <span class="text-right">{{ g.values.format_euro(party.party_income()) }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        const search = document.getElementById('search');
+
+        const filterCards = () => {
+            const cards = document.querySelectorAll(".card");
+            cards.forEach(card => {
+                let title = card.querySelector(".card-title");
+                if (title.innerHTML.toUpperCase().indexOf(search.value.toUpperCase()) > -1) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+    </script>
+{% endblock %}

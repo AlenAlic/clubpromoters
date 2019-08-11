@@ -1,0 +1,18 @@
+{% extends 'admin_base.html' %}
+
+{% block app_content %}
+    <div class="d-grid rid-template-columns-1 grid-template-columns-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create test data</h4>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    <button class="btn btn-warning w-100 my-1" name="reset">Reset test data</button>
+                    <button class="btn btn-primary w-100 my-1" name="organizer" {% if test_check["organizer"] %}disabled{% endif %}>Create test Organizer account</button>
+                    <button class="btn btn-primary w-100 my-1" name="promoters" {% if test_check["promoters"] %}disabled{% endif %}>Create test Promoters accounts</button>
+                    <button class="btn btn-primary w-100 my-1" name="codes" {% if test_check["codes"] %}disabled{% endif %}>Create test Codes</button>
+                    <button class="btn btn-primary w-100 my-1" name="parties" {% if test_check["parties"] %}disabled{% endif %}>Create test Parties</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

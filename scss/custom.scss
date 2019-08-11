@@ -1,0 +1,392 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+@import "functions";
+@import "variables";
+@import "utilities";
+
+//body {
+//  min-height: 100vh;
+//  min-width: 100%;
+//}
+body {
+  min-height: 100vh;
+  //height: 100%;
+}
+
+// Login Form
+.login-container, .single-card-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: $dark;
+
+  .login-card {
+    width: 100%;
+    max-width: $single-card-width;
+  }
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.single-card-container {
+  * {
+    width: 100%;
+    max-width: $single-card-width;
+  }
+}
+
+.main-content {
+  padding-left: 0;
+  background-color: $light;
+  width: 100%;
+  height: 100%;
+}
+@include media-breakpoint-up(lg) {
+  .main-content {
+    padding-left: $sidebar-width;
+  }
+}
+
+.navbar-default {
+  min-height: $sidebar-brand-height;
+}
+
+.sidebar {
+  min-height: 0;
+  width: 100%;
+  margin-left: 0.75rem;
+  margin-top: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  -webkit-transition: margin, height 1.25s ease-out;
+  -moz-transition: margin, height 1.25s ease-out;
+  -o-transition: margin, height 1.25s ease-out;
+  transition: margin, height 1.25s ease-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 1100;
+  background-color: $white;
+  -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.8);
+  -moz-box-shadow: 0 0 8px 0 rgba(0,0,0,0.8);
+  box-shadow: 0 0 8px 0 rgba(0,0,0,0.8);
+
+  &.show {
+    display: block;
+    min-height: auto;
+    height: auto;
+    padding-top: 0.5rem;
+    border-radius: 0.5rem;
+
+    .sidebar {
+      &-brand {
+        justify-content: space-between;
+        padding-right: 2rem;
+      }
+      &-link {
+        width: auto;
+      }
+    }
+  }
+
+  .sidebar {
+    &-item,
+    &-nav {
+      list-style: none;
+    }
+    &-item, &-heading {
+      padding: .625rem 1.75rem;
+    }
+    &-brand {
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      padding-left: 1.75rem;
+      font-size: 1.25rem;
+      .sidebar-link {
+        color: $dark;
+      }
+      .sidebar-link:focus, .sidebar-link:hover {
+        text-decoration: none;
+        color: $primary;
+      }
+    }
+
+    &-link {
+      color: $dark;
+      width: 100%;
+      display: block;
+    }
+
+    &-link:focus, &-link:hover {
+      text-decoration: none;
+      color: $primary;
+    }
+
+    &-nav {
+      padding-left: 0;
+
+      .sidebar-link > i {
+        min-width: 2.25rem;
+      }
+    }
+
+    &-heading {
+      font-size: .75rem;
+      padding-top: .25rem;
+      padding-bottom: .25rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .sidebar-toggler {
+    display: none;
+  }
+  .sidebar {
+    min-height: 100vh;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    max-width: $sidebar-width;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    z-index: 1100;
+    background-color: $white;
+    -webkit-box-shadow: -2px 0 6px 0 rgba(0,0,0,0.8);
+    -moz-box-shadow: -2px 0 6px 0 rgba(0,0,0,0.8);
+    box-shadow: -2px 0 6px 0 rgba(0,0,0,0.8);
+
+    &.show {
+      display: block;
+      min-height: 100vh;
+      height: auto;
+      padding-top: 0;
+      border-radius: 0;
+    }
+
+    .sidebar {
+      &-item,
+      &-nav {
+        list-style: none;
+      }
+      &-item, &-heading {
+        padding: .625rem 1.75rem;
+      }
+      &-brand {
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        padding-left: 1.75rem;
+        font-size: 1.25rem;
+        .sidebar-link {
+          color: $dark;
+        }
+        .sidebar-link:focus, .sidebar-link:hover {
+          text-decoration: none;
+          color: $primary;
+        }
+        .sidebar-close {
+          display: none;
+        }
+      }
+
+      &-link {
+        color: $dark;
+        width: 100%;
+        display: block;
+      }
+
+      &-link:focus, &-link:hover {
+        text-decoration: none;
+        color: $primary;
+      }
+
+      &-nav {
+        padding-left: 0;
+
+        .sidebar-link > i {
+          min-width: 2.25rem;
+        }
+      }
+
+      &-heading {
+        font-size: .75rem;
+        padding-top: .25rem;
+        padding-bottom: .25rem;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+//// Generate series of `.sidebar-expand-*` responsive classes for configuring
+//// where your navbar collapses.
+//.sidebar-expand {
+//  @each $breakpoint in map-keys($grid-breakpoints) {
+//    $next: breakpoint-next($breakpoint, $grid-breakpoints);
+//    $infix: breakpoint-infix($next, $grid-breakpoints);
+//
+//    &#{$infix} {
+//
+//      @include media-breakpoint-up($next) {
+//        flex-flow: row nowrap;
+//        justify-content: flex-start;
+//
+//        .sidebar-nav {
+//          flex-direction: row;
+//
+//          .dropdown-menu {
+//            position: absolute;
+//          }
+//
+//          .nav-link {
+//            padding-right: $navbar-nav-link-padding-x;
+//            padding-left: $navbar-nav-link-padding-x;
+//          }
+//        }
+//
+//        .sidebar-collapse {
+//          display: flex !important; // stylelint-disable-line declaration-no-important
+//          flex-direction: column;
+//
+//          // Changes flex-bases to auto because of an IE10 bug
+//          flex-basis: auto;
+//        }
+//
+//        .sidebar-toggler {
+//          display: none;
+//        }
+//      }
+//    }
+//  }
+//}
+
+$party-border: 2px solid black;
+$party-card-width: 1100px;
+.party-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: $party-card-width;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: $party-border;
+  max-width: $party-card-width;
+  margin: 0 auto;
+
+  .party {
+    &-img {
+      border: $party-border;
+      height: 400px;
+    }
+    &-info {
+      display: grid;
+      grid-template-columns: 6rem 12rem auto 14rem;
+      text-align: center;
+      .party {
+        &-date {
+          border: $party-border;
+          font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+          .party-month {
+            font-size: 2rem;
+          }
+          .party-day {
+            font-size: 3rem;
+          }
+        }
+        &-info-logo {
+          border: $party-border;
+          .party-time {
+            font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+            border-bottom: $party-border;
+          }
+          .party-logo {
+            border-top: $party-border;
+            height: 96px;
+          }
+        }
+        &-venue {
+          border: $party-border;
+          font-size: 5rem;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+          svg {
+            height: 120px;
+          }
+        }
+        &-buy {
+          font-size: 1.25rem;
+          border: $party-border;
+          .party-buy-tickets{
+            padding: 0.5rem 0.5rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            .tables-container {
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.tickets-container {
+  display: flex;
+  justify-content: space-between;
+  .party-counter {
+    .party-amount {
+      max-width: 2.5rem;
+      width: auto;
+      border: 1px solid gray;
+      margin: 0 0.75rem;
+      padding: 0 0.25rem;
+      text-align: center;
+    }
+  }
+}
+.left-right-split-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.purchase-order {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  .card {
+    min-width: 300px;
+  }
+}

@@ -1,0 +1,104 @@
+<nav class="sidebar sidebar-expand-lg">
+    <div class="sidebar-brand">
+        <a class="sidebar-link" href="{{ url_for('main.index') }}">{{ brand_text }}</a>
+        <button class="sidebar-close btn btn-outline-primary" type="button" onclick="closeMenu()">{{ check_icon(false) }}</button>
+    </div>
+    <div class="" id="sidebar">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/dashboard') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('main.dashboard') }}">
+                    <i class="fas fa-desktop"></i>
+                    Dashboard
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading">User accounts</h6>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/create_new_account') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.create_new_account') }}">
+                    <i class="fas fa-user-plus"></i>
+                    Create new account
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/club_owner_accounts') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.club_owner_accounts') }}">
+                    <i class="fas fa-user-tie"></i>
+                    {{ g.values.CLUB_OWNER }} accounts
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/promoter_accounts') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.promoter_accounts') }}">
+                    <i class="fas fa-user"></i>
+                    Promoter accounts
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading">Codes</h6>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/codes') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.codes') }}">
+                    <i class="fas fa-list-ol"></i>
+                    Codes
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading">Parties</h6>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/create_new_party') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.create_new_party') }}">
+                    <i class="far fa-calendar-plus"></i>
+                    Create new party
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/inactive_parties') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.inactive_parties') }}">
+                    <i class="far fa-times-circle"></i>
+                    Inactive parties <span class="badge badge-pill badge-primary">{{ g.inactive_parties|length }}</span>
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/active_parties') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.active_parties') }}">
+                    <i class="fas fa-glass-cheers"></i>
+                    Active parties <span class="badge badge-pill badge-primary">{{ g.active_parties|length }}</span>
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/past_parties') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.past_parties') }}">
+                    <i class="fab fa-cc-diners-club"></i>
+                    Past parties
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading">Finances</h6>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/party_income') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.party_income') }}">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Party income
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="#">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Organization commissions
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="#">
+                    <i class="fas fa-comment-dollar"></i>
+                    Promoter commissions
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading">Statistics</h6>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="#">
+                    <i class="fas fa-tools"></i>
+                    Work in progress
+                </a>
+            </li>
+        </ul>
+    <div class="my-5"></div>
+    </div>
+</nav>

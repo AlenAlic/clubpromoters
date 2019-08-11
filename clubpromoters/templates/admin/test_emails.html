@@ -1,0 +1,52 @@
+{% extends 'admin_base.html' %}
+
+{% block app_content %}
+    <div class="d-grid rid-template-columns-1 grid-template-columns-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Generate test emails</h4>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    {% for mail, txt in email.items() %}
+                        <button class="btn btn-primary w-100 my-1" name="{{ mail }}">{{ txt }}</button>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if txt_preview is not none and html_preview is not none %}
+    <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="card-title">HTML email preview</h5>
+                    <div class="card mb-5">
+                        <div class="card-body">
+                            <div>{{ html_preview|safe }}</div>
+                        </div>
+                    </div>
+                    <h5 class="card-title">txt email preview</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="white-space: pre-line;">{{ txt_preview }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $( document ).ready(function() {
+            $('#exampleModal').modal('show')
+        });
+    </script>
+    {% endif %}
+{% endblock %}

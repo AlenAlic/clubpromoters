@@ -1,0 +1,43 @@
+{% block doc -%}
+<!DOCTYPE html>
+<html lang="en" {% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}
+    <head>
+    {%- block head %}
+    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+
+    {%- block metas %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <meta name="Description" content="Nightlife in Amsterdam">
+    {%- endblock metas %}
+
+    {%- block styles %}
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+        <!-- Icons -->
+        <link rel="stylesheet" href="{{url_for('static', filename='font_awesome/css/all.css')}}{{ aver }}">
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.custom.css')}}{{ aver }}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/custom.css')}}{{ aver }}{{ now }}">
+        <!--JS-->
+        <script type="text/javascript" src="{{url_for('static', filename='js/jquery.min.js')}}{{ aver }}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap-notify.js')}}{{ aver }}"></script>
+    {%- endblock styles %}
+    {%- endblock head %}
+    </head>
+    <body {% block body_attribs %}class="bg-light" {% endblock body_attribs %}>
+    {% block body -%}
+
+    {% block content -%}
+    {%- endblock content %}
+
+    {% block scripts %}
+    <script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}{{ aver }}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}{{ aver }}"></script>
+    {%- endblock scripts %}
+    {%- endblock body %}
+    </body>
+{%- endblock html %}
+</html>
+{% endblock doc -%}

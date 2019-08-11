@@ -1,0 +1,36 @@
+{% extends 'admin_base.html' %}
+
+{% block app_content %}
+    <div class="d-grid rid-template-columns-1 grid-template-columns-lg-2">
+        <div class="card">
+            {% if organizer is not none %}
+                <div class="card-body">
+                    <h4 class="card-title mb-0">Organizer account</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Username:</b><br/>{{ organizer.username }}</li>
+                    <li class="list-group-item"><b>E-mail:</b><br/>{{ organizer.email }}</li>
+                    <li class="list-group-item"><b>Access level:</b><br/>{{ g.values.ACCESS_LEVEL[organizer.access] }}</li>
+                    <li class="list-group-item">
+                        <b>Active:</b><br/>
+                        {% if organizer.is_active and organizer.password_hash is not none %}
+                            {{ g.values.TF[organizer.is_active] }}
+                        {% elif organizer.is_active %}
+                            Active, password not yet set.
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item"><b>Last seen:</b><br/>{{ organizer.last_seen }}</li>
+                </ul>
+            {% else %}
+                <div class="card-body">
+                    <h5 class="card-title">Create organizer account</h5>
+                    <form class="form" method="POST" enctype="multipart/form-data">
+                        {{ create_form.hidden_tag() }}
+                        {{ forms.form_field(create_form.email, icon='<i class="fas fa-envelope"></i>') }}
+                        {{ forms.form_field(create_form.submit) }}
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

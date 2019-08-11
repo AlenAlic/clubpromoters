@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+{% set dashboard_grid = "mb-4 d-grid grid-column-gap-3 grid-row-gap-3 grid-template-columns-md-2 grid-template-columns-lg-3 grid-template-columns-xl-4 grid-template-columns-xxl-4" %}
+
+{% macro dashboard_page(url="#", image="", title="Title", text="") %}
+<a href="{{url_for( url )}}" class="grid-place-self-stretch card my-0 text-decoration-none text-black text-center">
+    <div class="card-img mx-auto mt-3" style="font-size: 8rem">{{ image|safe }}</div>
+    <div class="card-body pb-4 pt-0 text-center">
+        <h4 class="card-title">{{ title }}</h4>
+        {% if text != "" %}<p class="card-text">{{ text }}</p>{% endif %}
+    </div>
+</a>
+{% endmacro %}
+
+
+{% block content %}
+    {% block navbar %}
+        <nav class="navbar navbar-expand-lg sticky-top bg-primary navbar-dark navbar-default">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">{{ brand_text }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="adminNavbar">
+            <form class="form-inline ml-auto">
+                    <span class="navbar-text mx-0 mx-md-2 my-1 my-md-0">Welcome, {{ current_user }}</span>
+                    <a href="{{ url_for('main.logout') }}" class="form-control btn btn-outline-light mx-0 mx-md-2 my-1 my-md-0">Logout</a>
+                </form>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <div class="container mt-3">
+        {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}

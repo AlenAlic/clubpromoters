@@ -1,0 +1,120 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h4 class="card-title">Add new code</h4>
+            <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                {{ add_codes_form.hidden_tag() }}
+                {{ forms.form_field(add_codes_form.number_of_codes, **{"onchange": "updatePreview(this)"}) }}
+                {{ forms.form_field(add_codes_form.submit) }}
+            </form>
+        </div>
+    </div>
+    <div class="d-grid grid-template-columns-xl-2 grid-row-gap-3 grid-column-gap-3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Active codes <span class="badge badge-pill badge-primary">{{ active_codes|length }}</span></h4>
+                <table class="table table-sm">
+                    <thead><tr><th>Code</th><th>Promoter</th><th></th></tr></thead>
+                    <tbody>
+                        {% for code in active_codes %}
+                            <tr>
+                                <td class="py-2">{{ code.code }}</td>
+                                {% if code.user is none %}
+                                    <td class="py-1">
+                                        <button class="btn btn-primary btn-sm" data-code="{{ code.code }}" data-toggle="modal" data-target="#assignModal" onclick="setCode(this);">Assign to Promoter</button>
+                                    </td>
+                                {% else %}
+                                    <td class="py-2">{{ code.user }}</td>
+                                {% endif %}
+                                <td class="py-1 text-right">
+                                    <button class="btn btn-danger btn-sm" data-code="{{ code.code }}" data-toggle="modal" data-target="#deactivateModal" onclick="deactivateCode(this);">Deactivate</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Inactive codes <span class="badge badge-pill badge-primary">{{ inactive_codes|length }}</span></h4>
+                <table class="table table-sm">
+                    <thead><tr><th>Code</th></tr></thead>
+                    <tbody>
+                        {% for code in inactive_codes %}
+                            <tr>
+                                <td>{{ code.code }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    <div class="modal-body">
+                        {{ assign_code_form.hidden_tag() }}
+                        {{ forms.form_field(assign_code_form.promoter) }}
+                        {{ assign_code_form.code }}
+                        <input class="form-control" name="previewCode" id="previewCode" required="" type="text" value="" disabled>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        {{ forms.form_field(assign_code_form.submit_assign_code) }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Deactivate code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you wish to deactivate code "<span id="deactivateCodeSpan"></span>"?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                        <input name="deactivateCode" id="deactivateCode" type="text" value="" hidden>
+                        <button type="submit" class="btn btn-primary" name="deactivateCodeSubmit">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        const codeField = document.getElementById("{{ assign_code_form.code.name }}");
+        const previewCode = document.getElementById("previewCode");
+        const setCode = elem => {
+            codeField.value = elem.dataset.code;
+            previewCode.value = elem.dataset.code;
+        };
+        const deactivateCodeSpan = document.getElementById("deactivateCodeSpan");
+        const deactivateCodeInput = document.getElementById("deactivateCode");
+        const deactivateCode = elem => {
+            deactivateCodeSpan.innerText = elem.dataset.code;
+            deactivateCodeInput.value = elem.dataset.code;
+        };
+    </script>
+{% endblock %}

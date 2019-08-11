@@ -1,0 +1,67 @@
+{% extends 'bootstrap_base.html' %}
+
+{% import 'forms.html' as forms %}
+
+
+{% if config.get('ENV') == g.values.DEBUG_ENV %}
+{% set aver = now %}
+{% else %}
+{% set aver = "?2019052119047" %}
+{% endif %}
+
+
+{% set brand_text = "clubpromoters.net" %}
+
+
+{% block body %}
+    {{ super() }}
+    {{ flash_messages() }}
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    const toggler = document.querySelector('sidebar-toggler');
+    const menu = document.querySelector('.sidebar');
+    const openMenu = () => {
+        menu.classList.add('show');
+    };
+    const closeMenu = () => {
+        menu.classList.remove('show');
+    };
+    const toggleMenu = () => {
+        if (menu.classList.contains('show')) {closeMenu();} else {openMenu();}
+    };
+</script>
+{% endblock %}
+
+{% macro flash_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <script>
+            {% for category, message in messages %}
+                $.notify({message: '{{ message }}'},{type: {% if category=='message' %}'alert-info'{% else %}'alert-{{ category }}'{% endif %}});
+            {% endfor %}
+            </script>
+        {% endif %}
+    {% endwith %}
+{% endmacro %}
+
+
+{% macro react() %}
+    {% if config.get('ENV') == g.values.DEBUG_ENV %}
+    <script src="{{url_for('static', filename='react/react.development.js')}}{{ aver }}"></script>
+    <script src="{{url_for('static', filename='react/react-dom.development.js')}}{{ aver }}"></script>
+    {% else %}
+    <script src="{{url_for('static', filename='react/react.production.min.js')}}{{ aver }}"></script>
+    <script src="{{url_for('static', filename='react/react-dom.production.min.js')}}{{ aver }}"></script>
+    {% endif %}
+    <script src="{{url_for('static', filename='js/react/util.js')}}{{ aver }}" ></script>
+{% endmacro %}
+
+
+{% macro check_icon(flag) %}
+    {% if flag %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}
+{% endmacro %}

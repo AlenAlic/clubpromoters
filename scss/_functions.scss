@@ -1,0 +1,7 @@
+@function breakpoint($key) {
+  @if map-has-key($grid-breakpoints, $key) {
+    @return map-get($grid-breakpoints, $key);
+  }
+  @warn "Unknown `#{$key}` in $grid-breakpoints.";
+  @return null;
+}

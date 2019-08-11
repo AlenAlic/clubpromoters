@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for party in g.active_parties %}
+        {% with party=party %}
+            <div class="my-5 py-5">
+                {% include "organizer/_party_card.html" %}
+            </div>
+        {% endwith %}
+    {% endfor %}
+    <script>
+        const changeTicketAmount = (elem, change) => {
+            let newValue = Number(elem.parentElement.getElementsByClassName("party-amount")[0].value) + change;
+            if (newValue > 0) {
+                elem.parentElement.getElementsByClassName("party-amount")[0].value = newValue;
+            }
+        }
+    </script>
+{% endblock %}

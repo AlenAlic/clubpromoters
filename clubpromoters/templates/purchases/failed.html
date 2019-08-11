@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="purchase-order d-flex justify-content-center w-100">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="card-title">Ticket purchase failed</h4>
+                <p>Something went wrong with your ticket purchase. The purchase has been cancelled. You will <b>not</b> be billed.</p>
+                <p>If you wish to purchase tickets for a party, please try again.</p>
+                <p><a class="btn btn-dark" href="{{ url_for('main.index') }}">Return to party overview</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

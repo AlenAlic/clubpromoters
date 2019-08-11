@@ -1,0 +1,29 @@
+{
+  "name": "clubpromoters",
+  "version": "1.0.0",
+  "description": "clubpromoters",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "node-sass -w scss/ -o clubpromoters/static/css/ --recursive",
+    "watch-react": "npx babel --watch react --out-dir clubpromoters/static/js/react --presets react-app/prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlenAlic/clubpromoters.git"
+  },
+  "author": "Alen Alic",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/AlenAlic/clubpromoters/issues"
+  },
+  "homepage": "https://github.com/AlenAlic/clubpromoters#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "argon-design-system-free": "^1.0.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "bootstrap": "^4.3.1",
+    "node-sass": "^4.12.0"
+  }
+}

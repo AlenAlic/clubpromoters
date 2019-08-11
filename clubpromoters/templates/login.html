@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="login-container bg-dark">
+        <div class="card login-card bg-light border-0">
+            <div class="card-body px-lg-4 py-4">
+                <div class="text-center">
+                    <h2>clubpromotors.nl</h2>
+                    <h4 class="mb-4">Sign in</h4>
+                </div>
+                <form class="form" method="POST" enctype="multipart/form-data">
+                    {{ login_form.hidden_tag() }}
+                    {{ forms.form_field(login_form.username, icon='<i class="fas fa-envelope"></i>') }}
+                    {{ forms.form_field(login_form.password, icon='<i class="fas fa-unlock-alt"></i>') }}
+                    {{ forms.form_field(login_form.remember_me) }}
+                    <div class="text-center">
+                        {{ forms.form_field(login_form.submit) }}
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="login-card mt-3">
+            <a class="text-light" href="{{ url_for('auth.reset_password_request') }}"><small>Forgot password?</small></a>
+        </div>
+    </div>
+{% endblock %}

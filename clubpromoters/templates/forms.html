@@ -1,0 +1,62 @@
+{% macro form_field(field, cancel_button="", icon="") %}
+
+    {% if field.widget.input_type == 'checkbox' %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="y" id="{{ field.name }}">
+            <label class="form-check-label" for="{{ field.name }}">
+                {{field.label.text|safe}}
+            </label>
+        </div>
+    {%- elif field.type == 'RadioField' -%}
+        <div class="form-group{%- if field.flags.required %} required{% endif -%}">
+            <legend class="col-form-label">{{field.label.text|safe}}</legend>
+            {% for item in field -%}
+            <div class="form-check">
+                {% if field.errors or field.description -%}{% endif %}
+                {% if field.errors %}{% set field_class = "form-check-input is-invalid" %}{% else %}{% set field_class = "form-check-input" %}{% endif %}
+                {{item(class=field_class, **kwargs)|safe}}
+                <label class="form-check-label clickable" for="{{ item.label.field_id }}">{{item.label.text|safe}}</label>
+                {%- if loop.last %}
+                    {%- if field.errors %}
+                        {%- for error in field.errors %}
+                            <div class="invalid-feedback">{{error}}</div>
+                        {%- endfor %}
+                    {%- elif field.description -%}
+                        <div style="margin-left: -20px;"><small class="text-muted">{{field.description|safe}}</small></div>
+                    {%- endif %}
+                {%- endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {%- elif field.widget.input_type == 'submit' -%}
+        {% if cancel_button != "" %}{% set field_class = "btn btn-primary mr-2" %}{% else %}{% set field_class = "btn btn-primary" %}{% endif %}
+        {{field(class=field_class, **kwargs)}}
+        {% if cancel_button != "" %}<a role="button" class="btn btn-secondary" href="{{ url_for(cancel_button) }}">Cancel</a>{% endif %}
+    {% else -%}
+        <div class="form-group {% if field.flags.required %}required{% endif %}">
+            {% if field.label.text != '' %}
+                {{field.label()}}
+            {% endif %}
+            {% if field.errors %}{% set field_class = "form-control is-invalid" %}{% else %}{% set field_class = "form-control" %}{% endif -%}
+            {% if icon != "" %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{ icon|safe }}</span>
+                    </div>
+            {% endif %}
+            {% if field.type == 'DateTimeField' %}
+                {% set kwargs = dict(type="datetime-local", **kwargs) %}
+            {% endif %}
+            {{field(class=field_class, **kwargs)|safe}}
+            {%- if field.errors %}
+                {%- for error in field.errors %}
+                    <div class="invalid-feedback">{{error}}</div>
+                {%- endfor %}
+            {%- elif field.description -%}
+                <div class="w-100"><small class="text-muted">{{field.description|safe}}</small></div>
+            {%- endif %}
+            {% if icon != "" %}</div>{% endif %}
+        </div>
+    {% endif %}
+
+{% endmacro %}

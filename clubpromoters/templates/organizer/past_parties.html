@@ -1,0 +1,29 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div>
+        <h1>Past parties <span class="badge badge-primary">42</span></h1>
+        <input type="search" id="search" class="form-control" placeholder="Search by name..." onkeyup="filterCards()">
+        <label for="search"></label>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        const search = document.getElementById('search');
+
+        const filterCards = () => {
+            const cards = document.querySelectorAll(".card");
+            let card, cardView;
+            cards.forEach(card => {
+                let title = card.querySelector(".card-title");
+                if (title.innerHTML.toUpperCase().indexOf(search.value.toUpperCase()) > -1) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+    </script>
+{% endblock %}
