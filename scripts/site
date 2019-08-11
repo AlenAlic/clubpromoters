@@ -25,8 +25,6 @@ pip install pip --upgrade
 pip install setuptools --upgrade
 pip install -r requirements.txt
 pip install gunicorn
-deactivate
-cd
 echo "Python requirements installed================="
 
 
@@ -86,6 +84,8 @@ echo "Database created=============================="
 flask shell<<EOF
 create_admin('$adminmail', '$adminpwd')
 EOF
+deactivate
+cd
 echo "Admin account created========================="
 
 
