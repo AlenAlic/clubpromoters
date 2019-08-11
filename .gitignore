@@ -1,0 +1,7 @@
+.cache
+.idea
+.vscode
+node_modules/
+venv/
+
+instance/config.py
