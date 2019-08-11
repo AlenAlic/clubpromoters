@@ -84,7 +84,7 @@ sudo mysql<<EOF
 INSERT INTO \`mailserver\`.\`virtual_aliases\`
   (\`id\`, \`domain_id\`, \`source\`, \`destination\`)
 VALUES
-  ('1', '1', 'alias@$website', 'info@$website'),
+  ('1', '1', 'info@$website', 'info@$website'),
   ('2', '1', '@$website', 'info@$website');
 EOF
 echo "Added virtual aliases========================="

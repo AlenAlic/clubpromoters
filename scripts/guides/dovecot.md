@@ -52,6 +52,8 @@ Uncomment
     !include auth-system.conf.ext
     !include auth-sql.conf.ext
 
+Save changes
+
 # /etc/dovecot/conf.d/auth-sql.conf.ext
 
     sudo nano /etc/dovecot/conf.d/auth-sql.conf.ext
@@ -150,8 +152,8 @@ Save changes
 
 Change
 
-    ssl_cert = </etc/letsencrypt/live/alenalic.nl/fullchain.pem
-    ssl_key = </etc/letsencrypt/live/alenalic.nl/privkey.pem
+    ssl_cert = </etc/letsencrypt/live/clubpromoters.net/fullchain.pem
+    ssl_key = </etc/letsencrypt/live/clubpromoters.net/privkey.pem
 
 # Restart dovecot
 
