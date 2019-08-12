@@ -157,7 +157,7 @@ server {
 
 }
 server {
-    server_name *.$website;
+    server_name $website *.$website;
     return 301 https://\$host\$request_uri;
 }
 EOL
