@@ -5,6 +5,7 @@
         <h1>Account activation for:</h1>
         <h2>{{ user.email }}</h2>
         <p>Please set your password below.</p>
+        <p>Your password must be at least 16 characters long, contain at least one lower- and uppercase character, and one number.</p>
         <form class="form" method="POST" enctype="multipart/form-data" novalidate>
             {{ form.hidden_tag() }}
             {{ forms.form_field(form.password) }}

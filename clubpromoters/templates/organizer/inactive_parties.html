@@ -24,7 +24,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <span class="font-weight-bold">Ticket price:</span>
-                        <span class="text-right">{{ g.values.format_euro(party.ticket_price) }}</span>
+                        <span class="text-right">{{ g.values.format_euro(party.get_ticket_price()) }}</span>
                     </div>
                     <div class="text-center mt-4">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#modal-{{ party.party_id }}">Start ticket sale</button>

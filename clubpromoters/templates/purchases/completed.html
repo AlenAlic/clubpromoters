@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="purchase-order d-flex justify-content-center w-100">
-        <div class="card">
+    <div class="purchase-order d-flex justify-content-center w-100 bg-dark">
+        <div class="card mx-3">
             <div class="card-body text-center">
                 <h4 class="card-title">Ticket purchase done</h4>
                 <p>Your purchase for {{ purchase.mollie_description() }} has been completed.</p>
                 <p>The tickets will be sent to "{{ purchase.email }}".</p>
-                <p><a class="btn btn-dark" href="{{ url_for('main.index') }}">Return to party overview</a></p>
+                <p><a class="btn btn-dark" href="{{ url_for('main.index') }}">Return to parties</a></p>
             </div>
         </div>
     </div>

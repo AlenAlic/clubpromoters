@@ -1,0 +1,23 @@
+<nav class="sidebar sidebar-expand-lg overflow-auto">
+    <div class="sidebar-brand">
+        <a class="sidebar-link" href="{{ url_for('main.index') }}">{{ brand_text }}</a>
+        <button class="sidebar-close btn btn-outline-primary" type="button" onclick="closeMenu()">{{ check_icon(false) }}</button>
+    </div>
+    <div class="" id="sidebar">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/promoter/code') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('promoter.code') }}">
+                    <i class="fas fa-hashtag"></i>
+                    My code
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/promoter/finances') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('promoter.finances') }}">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Finances
+                </a>
+            </li>
+        </ul>
+    <div class="my-5"></div>
+    </div>
+</nav>

@@ -3,7 +3,7 @@
 {% block content %}
     {{ react() }}
     <script src="{{url_for('static', filename='js/react/TicketPurchase.js')}}{{ aver }}" ></script>
-    <div id="order"></div>
+    <div id="order" class="bg-dark"></div>
     <script>
         ReactDOM.render(React.createElement(TicketPurchase, {party: {{party.json() | tojson}}, tickets: {{tickets}}}), document.getElementById('order'));
     </script>

@@ -3,7 +3,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 from clubpromoters.main import bp
 from clubpromoters.auth.forms import LoginForm
 from clubpromoters.models import User, Code
-from sqlalchemy import or_
 
 
 @bp.route('/', methods=['GET', "POST"])
@@ -11,8 +10,12 @@ from sqlalchemy import or_
 def index():
     if current_user.is_authenticated:
         return redirect(url_for('main.dashboard'))
+    code = None
+    if "code" in request.args:
+        code = request.args["code"]
     if request.method == "POST":
-        code = Code.query.filter(Code.active.is_(True), Code.code == request.form["code"]).first()
+        if code is None:
+            code = Code.query.filter(Code.active.is_(True), Code.code == request.form["code"]).first()
         if code is not None:
             session["code"] = code.code
             return redirect(url_for('purchases.index'))
@@ -33,10 +36,9 @@ def login():
     login_form = LoginForm()
     if request.method == "POST":
         if login_form.validate_on_submit():
-            user = User.query.filter(or_(User.username == login_form.username.data,
-                                         User.email == login_form.username.data)).first()
+            user = User.query.filter(User.email.ilike(login_form.username.data)).first()
             if user is None or not user.check_password(login_form.password.data):
-                flash('Invalid username or password')
+                flash('Invalid username or password.')
             elif user.is_active:
                 login_user(user, remember=login_form.remember_me.data)
                 return redirect(url_for('main.dashboard'))
@@ -58,4 +60,6 @@ def logout():
 def dashboard():
     if current_user.is_admin():
         return redirect(url_for('self_admin.dashboard'))
+    if current_user.is_promoter():
+        return redirect(url_for('promoter.code'))
     return render_template('dashboard.html')

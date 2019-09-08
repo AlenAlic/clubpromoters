@@ -14,7 +14,7 @@ def reset_password_request():
     form = ResetPasswordRequestForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            user = User.query.filter(User.email==form.email.data).first()
+            user = User.query.filter(User.email.ilike(form.email.data)).first()
             if user is not None:
                 send_password_reset_email(user)
                 flash('Check your email for the instructions to reset your password.')
@@ -48,10 +48,8 @@ def reset_password(token):
 def activate_account(token):
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    user = User.verify_reset_password_token(token)
+    user = User.query.filter(User.activation_code == token).first()
     if not user:
-        return redirect(url_for('main.index'))
-    if user == 'error':
         flash('Not a valid token.', 'danger')
         return redirect(url_for('main.index'))
     form = ResetPasswordForm()
@@ -59,6 +57,8 @@ def activate_account(token):
     if request.method == "POST":
         if form.validate_on_submit():
             user.set_password(form.password.data)
+            user.is_active = True
+            user.activation_code = None
             db.session.commit()
             flash('Your password has been set.', 'success')
             return redirect(url_for('main.login'))

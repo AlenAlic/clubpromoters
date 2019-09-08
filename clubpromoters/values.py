@@ -47,3 +47,8 @@ STATUS_FAILED = 'failed'
 STATUS_PAID = 'paid'
 STATUS_AUTHORIZED = 'authorized'
 HOLD_STATUS = [STATUS_PAID, STATUS_OPEN, STATUS_PENDING, STATUS_AUTHORIZED]
+
+PLACEHOLDER_URL = "/static/placeholder.png"
+UPLOAD_FOLDER = 'uploads'
+IMAGE = 'image'
+LOGO = 'logo'

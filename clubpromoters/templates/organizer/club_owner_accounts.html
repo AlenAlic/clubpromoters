@@ -2,47 +2,53 @@
 
 {% block app_content %}
     <div>
-        <h1>{{ g.values.CLUB_OWNER }} accounts <span class="badge badge-primary">{{ accounts|length }}</span></h1>
+        <h1>{{ g.values.CLUB_OWNER }} accounts <span class="badge badge-primary">{{ accounts|length }}</span> / Hostesses <span class="badge badge-primary">{{ hostesses }}</span></h1>
         <input type="text" id="filter" class="form-control" placeholder="Filter by name..." onkeyup="filterCards()">
         <label for="filter"></label>
     </div>
     <div class="d-grid grid-column-gap-3 grid-row-gap-3 grid-template-columns-xl-2">
         {% for acc in accounts %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-0">{{ acc.username }}</h4>
+            <div>
+                <div class="card">
+                    <div class="card-body align-items-center d-flex justify-content-between">
+                        <span class="card-title mb-0"><b>{{ acc.username }}</b></span>
+                        <a class="btn btn-link btn-sm" href="#">Edit</a>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>E-mail:</b><br/>{{ acc.email }}</li>
+                        <li class="list-group-item">
+                            <b>Active:</b><br/>
+                            {% if acc.is_active and acc.password_hash is not none %}
+                                {{ g.values.TF[acc.is_active] }}
+                            {% elif acc.is_active %}
+                                Active, password not yet set.
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item"><b>Last seen:</b><br/>{{ acc.last_seen }}</li>
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b>E-mail:</b><br/>{{ acc.email }}</li>
-                    <li class="list-group-item"><b>Access level:</b><br/>{{ g.values.ACCESS_LEVEL[acc.access] }}</li>
-                    <li class="list-group-item">
-                        <b>Active:</b><br/>
-                        {% if acc.is_active and acc.password_hash is not none %}
-                            {{ g.values.TF[acc.is_active] }}
-                        {% elif acc.is_active %}
-                            Active, password not yet set.
-                        {% endif %}
-                    </li>
-                    <li class="list-group-item"><b>Last seen:</b><br/>{{ acc.last_seen }}</li>
-                </ul>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-0">{{ hostesses[acc].username }}</h4>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b>E-mail:</b><br/>{{ hostesses[acc].email }}</li>
-                    <li class="list-group-item"><b>Access level:</b><br/>{{ g.values.ACCESS_LEVEL[hostesses[acc].access] }}</li>
-                    <li class="list-group-item">
-                        <b>Active:</b><br/>
-                        {% if hostesses[acc].is_active and hostesses[acc].password_hash is not none %}
-                            {{ g.values.TF[acc.is_active] }}
-                        {% elif hostesses[acc].is_active %}
-                            Active, password not yet set.
-                        {% endif %}
-                    </li>
-                    <li class="list-group-item"><b>Last seen:</b><br/>{{ hostesses[acc].last_seen }}</li>
-                </ul>
+            <div class="d-grid grid-row-gap-1">
+                {% for hostess in acc.hostesses %}
+                    <div class="card">
+                        <div class="card-body align-items-center d-flex justify-content-between">
+                            <span class="card-title mb-0"><b>Hostess ({{ acc.username }})</b></span>
+                            <a class="btn btn-link btn-sm" href="#">Edit</a>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>E-mail:</b><br/>{{ hostess.email }}</li>
+                            <li class="list-group-item">
+                                <b>Active:</b><br/>
+                                {% if hostess.is_active and hostess.password_hash is not none %}
+                                    {{ g.values.TF[acc.is_active] }}
+                                {% elif hostess.is_active %}
+                                    Active, password not yet set.
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item"><b>Last seen:</b><br/>{{ hostess.last_seen }}</li>
+                        </ul>
+                    </div>
+                {%  endfor %}
             </div>
         {% endfor %}
     </div>

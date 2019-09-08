@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass": "node-sass -w scss/ -o clubpromoters/static/css/ --recursive",
-    "watch-react": "npx babel --watch react --out-dir clubpromoters/static/js/react --presets react-app/prod"
+    "watch-react": "npx babel --watch react --out-dir clubpromoters/static/js/react --presets react-app/dev",
+    "react": "npx babel --watch react --out-dir clubpromoters/static/js/react --presets react-app/prod"
   },
   "repository": {
     "type": "git",

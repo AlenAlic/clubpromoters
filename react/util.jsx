@@ -106,6 +106,9 @@ const CheckMark = ({flag}) => {
 const Toggle = ({flag}) => {
     return flag ? <i className="fas fa-toggle-on"/>: <i className="fas fa-toggle-off"/>;
 };
+const Bubble = () => {
+    return <div className="spinner-grow text-dark mx-4 my-4" style={{width: "2.5rem", height: "2.5rem"}} role="status"/>
+};
 
 
 // General functionz
@@ -123,4 +126,20 @@ const classNames = (...names) => {
 const validateEmail = email => {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+};
+
+
+const MONTHS = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December",
 };

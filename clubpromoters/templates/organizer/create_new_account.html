@@ -1,29 +1,29 @@
 {% extends "sidebar_base.html" %}
 
 {% block app_content %}
-    <div class="d-grid grid-template-columns-xl-2">
+    <div class="d-grid grid-template-columns-xl-2 grid-row-gap-3 grid-column-gap-3">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Create new account</h4>
+                <h4 class="card-title">Create Club Owner account</h4>
                 <form class="form" method="POST" enctype="multipart/form-data" novalidate>
-                    {{ new_account_form.hidden_tag() }}
-                    {{ forms.form_field(new_account_form.type, **{"onchange": "showHostessEmail(this)"}) }}
-                    {{ forms.form_field(new_account_form.username, icon='<i class="far fa-user"></i>') }}
-                    {{ forms.form_field(new_account_form.email, icon='<i class="far fa-envelope"></i>') }}
-                    {{ forms.form_field(new_account_form.hostess_email, icon='<i class="far fa-envelope"></i>', disabled=(new_account_form.type.data != g.values.ACCESS[g.values.CLUB_OWNER])) }}
-                    {{ forms.form_field(new_account_form.submit) }}
+                    {{ new_club_owner_form.hidden_tag() }}
+                    {{ forms.form_field(new_club_owner_form.username, icon='<i class="fas fa-building"></i>') }}
+                    {{ forms.form_field(new_club_owner_form.email, icon='<i class="far fa-envelope"></i>') }}
+                    {{ forms.form_field(new_club_owner_form.submit) }}
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create Promoter account</h4>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    {{ new_promoter_form.hidden_tag() }}
+                    {{ forms.form_field(new_promoter_form.username, icon='<i class="fas fa-user"></i>') }}
+                    {{ forms.form_field(new_promoter_form.email, icon='<i class="far fa-envelope"></i>') }}
+                    {{ forms.form_field(new_promoter_form.code, icon='<i class="fas fa-hashtag"></i>') }}
+                    {{ forms.form_field(new_promoter_form.submit) }}
                 </form>
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-        const hostessContainer = document.getElementById('{{ new_account_form.hostess_email.name }}');
-        const showHostessEmail = elem => {
-            hostessContainer.disabled = elem.value !== "{{ g.values.ACCESS[g.values.CLUB_OWNER] }}";
-        }
-    </script>
 {% endblock %}

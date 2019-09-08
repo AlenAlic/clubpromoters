@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, flash, g, session
+from flask import render_template, redirect, url_for, request, flash, g, session, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from clubpromoters.purchases import bp
 from clubpromoters import db
@@ -22,43 +22,40 @@ def order():
     if "party_id" in request.form and "tickets" in request.form:
         party = Party.query.filter(Party.party_id == request.form["party_id"]).first()
         tickets = int(request.form["tickets"])
-        if party is not None:
-            if party.num_available_tickets >= int(request.form["tickets"]):
-                if "purchase_tickets" in request.form:
-                    print(request.form)
-                    purchase = Purchase(party=party, price=party.ticket_price * tickets,
-                                        email=request.form["email"], name=request.form["name"],
-                                        code=Code.query.filter(Code.code == session["code"]).first())
-                    for _ in range(int(request.form["tickets"])):
-                        purchase.tickets.append(Ticket())
-                    db.session.add(purchase)
-                    db.session.flush()
-                    purchase_hash = purchase.calculate_hash()
-                    while Purchase.query.filter(Purchase.hash == purchase_hash).first() is not None:
-                        purchase_hash = purchase.calculate_hash(add_date=True)
-                    purchase.hash = purchase.calculate_hash()
-                    mollie_client = Client()
-                    mollie_client.set_api_key(g.mollie)
-                    payment = mollie_client.payments.create({
-                        'amount': {
-                            'currency': 'EUR',
-                            'value': purchase.mollie_price()
-                        },
-                        'description': f'{purchase.mollie_description()}',
-                        'webhookUrl': url_for('purchases.mollie_webhook', _external=True),
-                        'redirectUrl': url_for('purchases.completed', purchase_hash=purchase.hash, _external=True),
-                        'metadata': {
-                            'purchase_id': str(purchase.purchase_id),
-                        }
-                    })
-                    purchase.mollie_payment_id = payment.id
-                    db.session.commit()
-                    return redirect(payment.checkout_url)
-                else:
-                    return render_template('purchases/order.html', tickets=tickets, party=party)
+        if party is not None and party.check_ticket_availability(int(request.form["tickets"])):
+            if "purchase_tickets" in request.form:
+                purchase = Purchase(party=party,
+                                    email=request.form["email"], name=request.form["name"],
+                                    code=Code.query.filter(Code.code == session["code"]).first())
+                purchase.set_price(party.get_ticket_price() * tickets)
+                for i in range(int(request.form["tickets"])):
+                    purchase.tickets.append(Ticket(number=i+1))
+                db.session.add(purchase)
+                db.session.flush()
+                purchase.set_hash()
+                db.session.commit()
+                mollie_client = Client()
+                mollie_client.set_api_key(g.mollie)
+                payment = mollie_client.payments.create({
+                    'amount': {
+                        'currency': 'EUR',
+                        'value': purchase.mollie_price()
+                    },
+                    'description': f'{purchase.mollie_description()}',
+                    'webhookUrl': url_for('purchases.mollie_webhook', _external=True),
+                    'redirectUrl': url_for('purchases.completed', purchase_hash=purchase.hash, _external=True),
+                    'metadata': {
+                        'purchase_id': str(purchase.purchase_id),
+                    }
+                })
+                purchase.mollie_payment_id = payment.id
+                db.session.commit()
+                return redirect(payment.checkout_url)
             else:
-                flash(f"There are only {party.num_available_tickets} tickets left, cannot "
-                      f"order {request.form['tickets']}.", "warning")
+                return render_template('purchases/order.html', tickets=tickets, party=party)
+        else:
+            flash(f"There are only {party.num_available_tickets} tickets left, cannot "
+                  f"order {request.form['tickets']}.", "warning")
     return redirect(url_for('purchases.index'))
 
 
@@ -68,7 +65,7 @@ def mollie_webhook():
         mollie_client = Client()
         mollie_client.set_api_key(g.mollie)
         if 'id' not in request.form:
-            flask.abort(404, 'Unknown payment id')
+            abort(404, 'Unknown payment id')
         payment_id = request.form['id']
         payment = mollie_client.payments.get(payment_id)
         purchase = Purchase.query.filter(Purchase.purchase_id == payment.metadata["purchase_id"]).first()
@@ -100,7 +97,7 @@ def mollie_webhook():
 @bp.route('/completed/<purchase_hash>', methods=['GET'])
 def completed(purchase_hash=None):
     if purchase_hash is None:
-        flask.abort(404, 'Unknown purchase')
+        abort(404, 'Unknown purchase')
     purchase = Purchase.query.filter(Purchase.hash == purchase_hash).first()
     if purchase is not None:
         return render_template('purchases/completed.html', purchase=purchase)
@@ -115,7 +112,7 @@ def failed():
 @bp.route('/qr_code/<purchase_hash>', methods=['GET'])
 def qr_code(purchase_hash=None):
     if purchase_hash is None:
-        flask.abort(404, 'Unknown purchase')
+        abort(404, 'Unknown purchase')
     purchase = Purchase.query.filter(Purchase.hash == purchase_hash).first()
     if purchase is not None:
         return render_template('purchases/completed.html', purchase=purchase)

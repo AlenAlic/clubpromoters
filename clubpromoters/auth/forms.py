@@ -30,7 +30,7 @@ class CorrectPassword(object):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('', validators=[DataRequired()], render_kw={"placeholder": "Username or e-mail"})
+    username = StringField('', validators=[DataRequired()], render_kw={"placeholder": "E-mail"})
     password = PasswordField('', validators=[DataRequired()], render_kw={"placeholder": "Password"})
     remember_me = BooleanField('Remember me')
     submit = SubmitField('Sign in')

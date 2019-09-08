@@ -1,0 +1,56 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div class="mb-2 d-grid grid-template-columns-xl-1 grid-column-gap-3 grid-row-gap-3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create new party (preview below)</h4>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    {{ upload_form.hidden_tag() }}
+                    {{ forms.form_field(upload_form.club_owner) }}
+                    <div class="form-row">
+                        <div class="col-12 col-sm-6">
+                            {{ forms.form_field(upload_form.image, **{"onchange": "readFile(this, 'image-preview', 'bg-preview-text-image')"}) }}
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            {{ forms.form_field(upload_form.logo, **{"onchange": "readFile(this, 'logo-preview', 'bg-preview-text-logo')"}) }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        {{ forms.form_field(upload_form.submit) }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Previews</h4>
+                <div class="mb-2 d-grid grid-template-columns-xl-2 grid-column-gap-4 grid-row-gap-4">
+                    <div class="d-flex justify-content-center">
+                        <div class="image preview bg-preview-text-image" id="image-preview"></div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="logo preview bg-preview-text-logo" id="logo-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const readFile = (input, target, placeholder) => {
+            let preview = document.getElementById(target);
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    preview.style.backgroundImage = `url(${e.target.result})`;
+                    preview.classList.remove(placeholder)
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.backgroundImage = 'none';
+                preview.classList.add(placeholder)
+            }
+        }
+    </script>
+{% endblock %}
+

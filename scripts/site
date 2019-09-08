@@ -51,6 +51,7 @@ MAIL_USE_TLS = True
 MAIL_USERNAME = 'no-reply@$website'
 MAIL_PASSWORD = ''
 ADMINS = ['']
+MAIL_DEFAULT_SENDER = 'no-reply@$website'
 
 
 MOLLIE_API_KEY = ""

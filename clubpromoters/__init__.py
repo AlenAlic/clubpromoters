@@ -23,7 +23,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
-admin = Admin(template_mode='bootstrap3', index_view=MyAdminIndexView())
+adm = Admin(template_mode='bootstrap3', index_view=MyAdminIndexView())
 
 
 class BaseView(ModelView):
@@ -59,7 +59,11 @@ class Anonymous(AnonymousUserMixin):
         return False
 
     @staticmethod
-    def is_club_owner(self):
+    def is_club_owner():
+        return False
+
+    @staticmethod
+    def is_promoter():
         return False
 
 
@@ -67,7 +71,7 @@ def create_app():
     """
     Create instance of website.
     """
-    from clubpromoters.models import User, Configuration, Party, Ticket, Purchase, Refund, Code
+    from clubpromoters.models import User, Configuration, Party, Ticket, Purchase, Refund, Code, File
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('config')
     app.config.from_pyfile('config.py')
@@ -79,14 +83,15 @@ def create_app():
     login.login_view = 'main.login'
     login.anonymous_user = Anonymous
     mail.init_app(app)
-    admin.init_app(app)
-    admin.add_view(UserView(User, db.session))
-    admin.add_view(BaseView(Configuration, db.session))
-    admin.add_view(BaseView(Party, db.session))
-    admin.add_view(BaseView(Ticket, db.session))
-    admin.add_view(BaseView(Purchase, db.session))
-    admin.add_view(BaseView(Refund, db.session))
-    admin.add_view(BaseView(Code, db.session))
+    adm.init_app(app)
+    adm.add_view(UserView(User, db.session))
+    adm.add_view(BaseView(Configuration, db.session))
+    adm.add_view(BaseView(Party, db.session))
+    adm.add_view(BaseView(Ticket, db.session))
+    adm.add_view(BaseView(Purchase, db.session))
+    adm.add_view(BaseView(Refund, db.session))
+    adm.add_view(BaseView(Code, db.session))
+    adm.add_view(BaseView(File, db.session))
 
     @app.before_request
     def before_request_callback():
@@ -97,8 +102,9 @@ def create_app():
         g.inactive_parties = Party.query.filter(Party.is_active.is_(False)).all()
         g.active_parties = Party.query.filter(Party.is_active.is_(True),
                                               Party.party_end_datetime > datetime.utcnow()).all()
-        mollie = Configuration.query.first()
-        g.mollie = mollie.mollie_api_key if mollie is not None else None
+        config = Configuration.query.first()
+        g.config = config
+        g.mollie = config.mollie_api_key if config is not None else None
 
     @app.context_processor
     def inject_now():
@@ -137,6 +143,9 @@ def create_app():
 
     from clubpromoters.purchases import bp as purchases_bp
     app.register_blueprint(purchases_bp, url_prefix='/purchases')
+
+    from clubpromoters.promoter import bp as promoter_bp
+    app.register_blueprint(promoter_bp, url_prefix='/promoter')
 
     return app
 

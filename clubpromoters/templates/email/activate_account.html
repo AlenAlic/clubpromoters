@@ -1,11 +1,11 @@
 {% from 'base.html' import brand_text %}
-<p>Dear {{ user.email }},</p>
+<p>Dear {{ user.username }},</p>
 <br/>
-<p>To activate your clubpromotors account, follow <a href="{{ url_for('auth.activate_account', token=token, _external=True) }}">this</a> link, and set a password for your account.</p>
+<p>To activate your clubpromoters account, follow <a href="{{ url_for('auth.activate_account', token=user.activation_code, _external=True) }}">this</a> link, and set a password for your account.</p>
 <p>
     Alternatively, you can paste the following link in your browser's address bar:
     <br/>
-    {{ url_for('auth.activate_account', token=token, _external=True) }}
+    {{ url_for('auth.activate_account', token=user.activation_code, _external=True) }}
 </p>
 <br/>
 <p>Regards,</p>

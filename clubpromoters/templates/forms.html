@@ -32,20 +32,28 @@
         {% if cancel_button != "" %}{% set field_class = "btn btn-primary mr-2" %}{% else %}{% set field_class = "btn btn-primary" %}{% endif %}
         {{field(class=field_class, **kwargs)}}
         {% if cancel_button != "" %}<a role="button" class="btn btn-secondary" href="{{ url_for(cancel_button) }}">Cancel</a>{% endif %}
+    {%- elif field.type == 'FileField' -%}
+        <div class="form-group {% if field.flags.required %}required{% endif %}">
+            {% if field.label.text != '' %}{{field.label()}}{% endif %}
+            {% if field.errors %}{% set field_class = "form-control-file is-invalid" %}{% else %}{% set field_class = "form-control-file" %}{% endif -%}
+            {{field(class=field_class, **kwargs)|safe}}
+            {%- if field.errors %}
+                {%- for error in field.errors %}
+                    <div class="invalid-feedback">{{error}}</div>
+                {%- endfor %}
+            {%- elif field.description -%}
+                <div class="w-100"><small class="text-muted">{{field.description|safe}}</small></div>
+            {%- endif %}
+        </div>
     {% else -%}
         <div class="form-group {% if field.flags.required %}required{% endif %}">
-            {% if field.label.text != '' %}
-                {{field.label()}}
-            {% endif %}
+            {% if field.label.text != '' %}{{field.label()}}{% endif %}
             {% if field.errors %}{% set field_class = "form-control is-invalid" %}{% else %}{% set field_class = "form-control" %}{% endif -%}
             {% if icon != "" %}
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{ icon|safe }}</span>
                     </div>
-            {% endif %}
-            {% if field.type == 'DateTimeField' %}
-                {% set kwargs = dict(type="datetime-local", **kwargs) %}
             {% endif %}
             {{field(class=field_class, **kwargs)|safe}}
             {%- if field.errors %}

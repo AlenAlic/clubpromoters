@@ -1,0 +1,37 @@
+<div class="party-card">
+    <div class="party-img" id="party-img"></div>
+    <div class="party-info">
+        <div class="party-info-container">
+            <div class="party-date">
+                <div class="party-month">{{ new_party_form.party_start_datetime.data.strftime("%b") }}</div>
+                <div class="party-day">{{ new_party_form.party_start_datetime.data.strftime("%d") }}</div>
+            </div>
+            <div class="party-info-logo">
+                <div class="party-time"><div class="day">{{ new_party_form.party_start_datetime.data.strftime("%A") }}</div><div class="time no-breaks">{{ new_party_form.party_start_datetime.data.strftime("%H:%M") }}-{{ new_party_form.party_end_datetime.data.strftime("%H:%M") }}</div></div>
+                <div class="party-logo" id="party-logo"></div>
+            </div>
+        </div>
+        <div class="party-venue" id="preview-title">
+            {% if new_party_form.title.data is not none %}{{ new_party_form.title.data }}{% else %}TITLE{% endif %}
+        </div>
+        <div class="party-buy">
+            <div class="party-buy-tickets">
+                <div class="tickets-container">
+                    <span class="party-title">Tickets</span>
+                    <span class="party-counter">
+                        <i class="fas fa-plus-circle clickable"></i>
+                        <input class="party-amount" min="0" step="1" value="6" disabled>
+                        <i class="fas fa-minus-circle clickable"></i>
+                    </span>
+                </div>
+                <div class="tables-container">
+                    <span class="party-title">Tables</span>
+                    <span><i class="fas fa-info-circle clickable"></i></span>
+                </div>
+                <div>
+                    <button class="btn btn-dark btn-sm">Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

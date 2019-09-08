@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-expand-lg">
+<nav class="sidebar sidebar-expand-lg overflow-auto">
     <div class="sidebar-brand">
         <a class="sidebar-link" href="{{ url_for('main.index') }}">{{ brand_text }}</a>
         <button class="sidebar-close btn btn-outline-primary" type="button" onclick="closeMenu()">{{ check_icon(false) }}</button>
@@ -44,6 +44,12 @@
         </ul>
         <h6 class="sidebar-heading">Parties</h6>
         <ul class="sidebar-nav">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/party_template') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.party_template') }}">
+                    <i class="far fa-calendar-plus"></i>
+                    Party templates
+                </a>
+            </li>
             <li class="sidebar-item {% if request.path.startswith('/organizer/create_new_party') %}list-group-item-primary{% endif %}">
                 <a class="sidebar-link" href="{{ url_for('organizer.create_new_party') }}">
                     <i class="far fa-calendar-plus"></i>
@@ -77,14 +83,20 @@
                     Party income
                 </a>
             </li>
-            <li class="sidebar-item">
-                <a class="sidebar-link" href="#">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/party_refunds') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.party_refunds') }}">
+                    <i class="fas fa-funnel-dollar"></i>
+                    Refunds
+                </a>
+            </li>
+            <li class="sidebar-item {% if request.path.startswith('/organizer/organization_commissions') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.organization_commissions') }}">
                     <i class="fas fa-file-invoice-dollar"></i>
                     Organization commissions
                 </a>
             </li>
-            <li class="sidebar-item">
-                <a class="sidebar-link" href="#">
+            <li class="sidebar-item {% if request.path.startswith('/organizer/promoter_commissions') %}list-group-item-primary{% endif %}">
+                <a class="sidebar-link" href="{{ url_for('organizer.promoter_commissions') }}">
                     <i class="fas fa-comment-dollar"></i>
                     Promoter commissions
                 </a>

@@ -1,38 +1,26 @@
 <div class="party-card">
-    <div class="party-img">
-        <svg width="100%" height="100%">
-            <defs>
-                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grad1)" />
-            <text fill="#ffffff" font-size="45" font-family="Verdana" text-anchor="middle" alignment-baseline="middle" x="50%" y="50%">IMAGES</text>
-        </svg>
+    <div class="party-img" style='background-image: url({{ party.image }})'></div>
+    <div class="party-venue">
+        {{ party.title }}
+    </div>
+    <div class="party-date">
+        <div>{{ party.party_start_datetime.strftime("%B") }} {{ party.party_start_datetime.strftime("%d") }}</div>
+        <div class="no-breaks">{{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}</div>
     </div>
     <div class="party-info">
-        <div class="party-date">
-            <div class="party-month">{{ party.party_start_datetime.strftime("%b") }}</div>
-            <div class="party-day">{{ party.party_start_datetime.strftime("%d") }}</div>
-        </div>
-        <div class="party-info-logo">
-            <div class="party-time">{{ party.party_start_datetime.strftime("%A") }} {{ party.party_start_datetime.strftime("%H:%M") }} {{ party.party_end_datetime.strftime("%H:%M") }}</div>
-            <div class="party-logo">
-                <svg width="100%" height="100%">
-                    <defs>
-                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:rgb(0,255,225);stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:rgb(255,225,0);stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grad2)" />
-                    <text fill="#ffffff" font-size="12" font-family="Verdana" text-anchor="middle" alignment-baseline="middle" x="50%" y="50%">LOGO</text>
-                </svg>
+        <div class="party-info-container">
+            <div class="party-date">
+                <div class="party-month">{{ party.party_start_datetime.strftime("%b") }}</div>
+                <div class="party-day">{{ party.party_start_datetime.strftime("%d") }}</div>
             </div>
-        </div>
-        <div class="party-venue">
-            {{ party.title }}
+            <div class="party-date-full">
+                <div>{{ party.party_start_datetime.strftime("%b") }} {{ party.party_start_datetime.strftime("%d") }}</div>
+                <div class="no-breaks preview-time">{{ party.party_start_datetime.strftime("%H:%M") }}-{{ party.party_end_datetime.strftime("%H:%M") }}</div>
+            </div>
+            <div class="party-info-logo">
+                <div class="party-time no-breaks">{{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}</div>
+                <div class="party-logo" style='background-image: url({{ party.logo }})'></div>
+            </div>
         </div>
         <div class="party-buy">
             <div class="party-buy-tickets">

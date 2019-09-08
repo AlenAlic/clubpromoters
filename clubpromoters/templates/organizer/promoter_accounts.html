@@ -6,26 +6,27 @@
         <input type="search" id="search" class="form-control" placeholder="Search by name..." onkeyup="filterCards()">
         <label for="search"></label>
     </div>
-    <div class="d-grid grid-column-gap-3 grid-template-columns-xl-2 grid-row-gap-4">
+    <div class="d-grid grid-column-gap-3 grid-template-columns-md-2 grid-template-columns-lg-2 grid-template-columns-xl-3 grid-row-gap-3">
     {% for acc in accounts %}
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-0">{{ acc.username }}</h4>
+        <div>
+            <div class="card">
+                <div class="card-body align-items-center d-flex justify-content-between">
+                    <span class="card-title mb-0"><b>{{ acc.email }}</b></span>
+                    <a class="btn btn-link btn-sm" href="#">Edit</a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <b>Active:</b><br/>
+                        {% if acc.is_active and acc.password_hash is not none %}
+                            {{ g.values.TF[acc.is_active] }}
+                        {% elif acc.is_active %}
+                            Active, password not yet set.
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item"><b>Last seen:</b><br/>{{ acc.last_seen }}</li>
+                    <li class="list-group-item"><b>Code:</b><br/>{{ acc.code }}</li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>E-mail:</b><br/>{{ acc.email }}</li>
-                <li class="list-group-item"><b>Access level:</b><br/>{{ g.values.ACCESS_LEVEL[acc.access] }}</li>
-                <li class="list-group-item">
-                    <b>Active:</b><br/>
-                    {% if acc.is_active and acc.password_hash is not none %}
-                        {{ g.values.TF[acc.is_active] }}
-                    {% elif acc.is_active %}
-                        Active, password not yet set.
-                    {% endif %}
-                </li>
-                <li class="list-group-item"><b>Last seen:</b><br/>{{ acc.last_seen }}</li>
-                <li class="list-group-item"><b>Code:</b><br/>{{ acc.code }}</li>
-            </ul>
         </div>
     {% endfor %}
     </div>

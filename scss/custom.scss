@@ -63,11 +63,15 @@ body {
 
 .navbar-default {
   min-height: $sidebar-brand-height;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .sidebar {
   min-height: 0;
   width: 100%;
+  height: 100%;
   margin-left: 0.75rem;
   margin-top: 0.75rem;
   max-width: calc(100% - 1.5rem);
@@ -88,9 +92,11 @@ body {
   &.show {
     display: block;
     min-height: auto;
+    //height: calc(100vh - 1.5rem);
     height: auto;
     padding-top: 0.5rem;
     border-radius: 0.5rem;
+    max-height: 85%;
 
     .sidebar {
       &-brand {
@@ -285,82 +291,271 @@ body {
 //  }
 //}
 
-$party-border: 2px solid black;
-$party-card-width: 1100px;
+$font-family-party-card-orig: Impact, Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+$font-family-party-card: Arial Narrow Helvetica, Lucida Sans Unicode, Verdana,sans serif;
+
+
+$party-border-lg: 2px solid black;
+$party-card-width-lg: 630px;
+//.party-card {
+//  position: relative;
+//  display: flex;
+//  flex-direction: column;
+//  min-width: $party-card-width-lg;
+//  word-wrap: break-word;
+//  background-color: #fff;
+//  background-clip: border-box;
+//  border: $party-border-lg;
+//  border-radius: 3px;
+//  max-width: $party-card-width-lg;
+//  margin: 0 auto;
+//
+//  .party {
+//    &-img {
+//      border: $party-border-lg;
+//      height: 540px;
+//      background-image: none;
+//      background-size: cover;
+//      background-position: center;
+//    }
+//    &-info {
+//      display: grid;
+//      grid-template-columns: 20rem auto 14rem;
+//      text-align: center;
+//      .party-info-container {
+//        display: grid;
+//        grid-template-columns: 6rem auto;
+//        .party {
+//          &-date {
+//            border: $party-border-lg;
+//            font-family: $font-family-party-card;
+//            display: flex;
+//            flex-direction: column;
+//            .party-month {
+//              font-size: 2rem;
+//              flex-grow: 1;
+//            }
+//            .party-day {
+//              flex-grow: 1;
+//              font-size: 3rem;
+//            }
+//          }
+//          &-info-logo {
+//            border: $party-border-lg;
+//            .party-time {
+//              font-family: $font-family-party-card;
+//              border-bottom: $party-border-lg;
+//              display: flex;
+//              flex-direction: row;
+//              justify-content: center;
+//              .day {
+//                padding: 0 0.5rem;
+//              }
+//            }
+//            .party-logo {
+//              border-top: $party-border-lg;
+//              height: 6rem;
+//              background-image: none;
+//              background-size: cover;
+//              background-position: center;
+//            }
+//          }
+//        }
+//      }
+//      .party {
+//        &-venue {
+//          border: $party-border-lg;
+//          font-size: 4rem;
+//          display:flex;
+//          justify-content:center;
+//          align-items:center;
+//          font-family: $font-family-party-card;
+//          text-transform: uppercase;
+//        }
+//        &-buy {
+//          font-size: 1.25rem;
+//          border: $party-border-lg;
+//          .party-buy-tickets{
+//            padding: 0.5rem 0.5rem;
+//            height: 100%;
+//            display: flex;
+//            flex-direction: column;
+//            justify-content: space-between;
+//            .tables-container {
+//              display: flex;
+//              justify-content: space-between;
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
+$party-card-border-radius : 1rem;
 .party-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: $party-card-width;
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: $party-border;
-  max-width: $party-card-width;
+  border-radius: $party-card-border-radius;
   margin: 0 auto;
+  min-width: $party-card-width-lg;
+  max-width: $party-card-width-lg;
+  //border: $party-border-lg;
 
   .party {
     &-img {
-      border: $party-border;
-      height: 400px;
+      border: $party-border-lg;
+      height: 540px;
+      background-image: none;
+      background-size: cover;
+      background-position: center;
+      border-top-left-radius: $party-card-border-radius;
+      border-top-right-radius: $party-card-border-radius;
+    }
+    &-venue {
+      border: $party-border-lg;
+      font-size: 3rem;
+      display: flex;
+      justify-content: center;
+      font-family: $font-family-party-card;
+      text-transform: uppercase;
+    }
+    &-date {
+      border: $party-border-lg;
+      display: none;
     }
     &-info {
       display: grid;
-      grid-template-columns: 6rem 12rem auto 14rem;
+      grid-template-columns: 22rem auto;
       text-align: center;
-      .party {
-        &-date {
-          border: $party-border;
-          font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
-          .party-month {
-            font-size: 2rem;
-          }
-          .party-day {
-            font-size: 3rem;
-          }
-        }
-        &-info-logo {
-          border: $party-border;
-          .party-time {
-            font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
-            border-bottom: $party-border;
-          }
-          .party-logo {
-            border-top: $party-border;
-            height: 96px;
-          }
-        }
-        &-venue {
-          border: $party-border;
-          font-size: 5rem;
-          display:flex;
-          justify-content:center;
-          align-items:center;
-          font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
-          svg {
-            height: 120px;
-          }
-        }
-        &-buy {
-          font-size: 1.25rem;
-          border: $party-border;
-          .party-buy-tickets{
-            padding: 0.5rem 0.5rem;
-            height: 100%;
+      .party-info-container {
+        display: grid;
+        grid-template-columns: auto 14rem;
+        .party {
+          &-date {
+            border: $party-border-lg;
+            font-family: $font-family-party-card;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            .tables-container {
-              display: flex;
-              justify-content: space-between;
+            border-bottom-left-radius: $party-card-border-radius;
+            .party-month {
+              font-size: 2.8rem;
+              flex-grow: 1;
+            }
+            .party-day {
+              flex-grow: 1;
+              font-size: 3.2rem;
             }
           }
+          &-date-full {
+            display: none;
+          }
+          &-info-logo {
+            border: $party-border-lg;
+            .party-time {
+              font-family: $font-family-party-card;
+              border-bottom: $party-border-lg;
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              padding: 0.15rem 0;
+              font-size: 1.25rem;
+            }
+            .party-logo {
+              border-top: $party-border-lg;
+              height: 7rem;
+              background-image: none;
+              background-size: cover;
+              background-position: center;
+            }
+          }
+        }
+      }
+      .party-buy {
+        font-size: 1.25rem;
+        border: $party-border-lg;
+        border-bottom-right-radius: $party-card-border-radius;
+      }
+    }
+  }
+}
+$party-border: 1px solid black;
+$party-card-width: 91vw;
+@media (max-width: breakpoint(md)){
+  .party-card {
+    min-width: $party-card-width;
+    max-width: $party-card-width;
+    //border: $party-border;
+
+    .party {
+      &-img {
+        border: $party-border;
+        height: 78vw;
+      }
+      &-venue {
+        border: $party-border;
+        font-size: 1.5rem;
+        font-family: $font-family-party-card;
+      }
+      &-date {
+        border: $party-border;
+        display: none;
+        flex-direction: row;
+        justify-content: space-around;
+        font-size: 1rem;
+      }
+      &-info {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        .party-info-container {
+          display: grid;
+          grid-template-columns: auto 10rem;
+          .party {
+            &-date {
+              display: none;
+            }
+            &-date-full {
+              border: $party-border;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-around;
+            }
+            &-info-logo {
+              border: $party-border;
+              .party-time {
+                display: none;
+              }
+              .party-logo {
+                border-top: none;
+                height: 5rem;
+                background-image: none;
+                background-size: cover;
+                background-position: center;
+              }
+            }
+          }
+        }
+        .party-buy {
+          font-size: 1rem;
+          border: $party-border;
+          border-bottom-left-radius: $party-card-border-radius;
         }
       }
     }
   }
 }
 
+.party-buy-tickets{
+  padding: 0.5rem 0.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .tickets-container {
   display: flex;
   justify-content: space-between;
@@ -375,6 +570,11 @@ $party-card-width: 1100px;
     }
   }
 }
+.tables-container {
+  display: flex;
+  justify-content: space-between;
+}
+
 .left-right-split-container {
   display: flex;
   justify-content: space-between;
@@ -388,5 +588,45 @@ $party-card-width: 1100px;
   align-items: center;
   .card {
     min-width: 300px;
+  }
+}
+
+.preview {
+  background-image: none;
+  background-size: cover;
+  background-position: center;
+  &.image {
+    width: 42vw;
+    height: 36vw;
+  }
+  &.logo {
+    width: 20vw;
+    height: 10vw;
+  }
+}
+
+@media (max-width: breakpoint(md)) {
+  .preview {
+    &.image {
+      width: 63vw;
+      height: 54vw;
+    }
+    &.logo {
+      width: 70vw;
+      height: 35vw;
+    }
+  }
+}
+
+.code-text{
+  font-size: 5rem;
+}
+
+@include media-breakpoint-up(lg) {
+  .modal {
+    &.sidebar-modal {
+      left: $sidebar-width;
+      width: calc(100% - #{$sidebar-width});
+    }
   }
 }

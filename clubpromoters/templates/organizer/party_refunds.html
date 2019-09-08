@@ -1,0 +1,11 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    {{ react() }}
+    <script src="{{url_for('static', filename='js/react/PurchaseRefund.js')}}{{ aver }}" ></script>
+    <div id="finances"></div>
+    <script>
+        ReactDOM.render(React.createElement(PurchaseRefund, {year: {{year | tojson}}, min_year: {{min_year | tojson}},
+            month: {{month | tojson}}}), document.getElementById('finances'));
+    </script>
+{% endblock %}

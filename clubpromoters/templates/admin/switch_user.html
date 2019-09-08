@@ -1,0 +1,16 @@
+{% extends 'admin_base.html' %}
+
+{% block app_content %}
+    <div class="d-grid rid-template-columns-1 grid-template-columns-md-2 grid-template-columns-lg-3 grid-template-columns-xxl-4 grid-column-gap-3 grid-row-gap-3">
+        {% for user in users %}
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="card-title">{{ user.email }}</h4>
+                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                    <button class="btn btn-primary my-1" name="user" value="{{ user.user_id }}">Switch</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

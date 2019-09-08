@@ -10,7 +10,7 @@ style="height:100vh"
 {% endblock body_attribs %}
 
 {% block content %}
-    <div style="display: grid; height: 100%">
+    <div class="bg-dark" style="display: grid; height: 100vh;">
         <div style="margin: auto">
         {% if g.active_parties|length > 0 %}
             {% with party=g.active_parties[0] %}
@@ -18,15 +18,22 @@ style="height:100vh"
             {% endwith %}
         {% endif %}
         </div>
+    </div>
+    <div id="code" class="bg-dark text-center" style="display: flex; width: 100vw; height: 100vh; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; opacity: 0; transition: all 2s linear">
         <form class="form w-25 text-center" style="justify-self: center;" method="POST" enctype="multipart/form-data" novalidate>
             <div class="form-group">
                 <label for="code">Code</label>
                 <input type="number" class="form-control" id="code" name="code" maxlength="8" pattern="^[0-9]{4}$">
             </div>
-            <button type="submit" class="btn btn-primary">Enter</button>
+            <button type="submit" class="btn btn-dark">Enter</button>
         </form>
     </div>
-    <div style="display: none; width: 100vw; height: 100vh;">
-
-    </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(event){
+        setTimeout(function(){
+            let code = document.getElementById("code");
+            code.style.opacity = 1;
+            }, 2000);
+    });
+    </script>
 {% endblock %}

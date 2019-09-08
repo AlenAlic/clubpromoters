@@ -1,0 +1,12 @@
+{% extends "sidebar_base.html" %}
+
+{% block app_content %}
+    <div class="d-grid text-center h-100">
+        <div class="card">
+            <div class="card-body">
+                <div class="code-text mb-5">{% if current_user.cone is not none %}{{ current_user.code.code }}{% endif %}</div>
+                <img class="w-100" style="max-width: 400px" src="data:image/png;base64,{{ current_user.code.qr_code() }}" alt="QR code">
+            </div>
+        </div>
+    </div>
+{% endblock %}

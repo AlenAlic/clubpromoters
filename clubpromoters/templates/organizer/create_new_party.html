@@ -1,30 +1,51 @@
 {% extends "sidebar_base.html" %}
 
 {% block app_content %}
+
     <div class="mb-2 d-grid grid-template-columns-xl-1 grid-column-gap-3 grid-row-gap-3">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Create new party (preview below)</h4>
                 <form class="form" method="POST" enctype="multipart/form-data" novalidate>
                     {{ new_party_form.hidden_tag() }}
-                    {{ forms.form_field(new_party_form.title, **{"onkeyup": "updatePreview(this)"}) }}
                     <div class="form-row">
                         <div class="col-12 col-sm-6">
-                            {{ forms.form_field(new_party_form.party_start_datetime) }}
+                            {{ forms.form_field(new_party_form.club_owner) }}
                         </div>
                         <div class="col-12 col-sm-6">
-                            {{ forms.form_field(new_party_form.party_end_datetime) }}
+                            {{ forms.form_field(new_party_form.title, icon='<i class="fas fa-heading"></i>', **{"onkeyup": "updatePreviewTitle(this)"}) }}
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col-12 col-sm-6">
-                            {{ forms.form_field(new_party_form.num_available_tickets) }}
+                            {{ forms.form_field(new_party_form.party_start_datetime, **{"onchange": "updatePreviewDate()"}) }}
                         </div>
                         <div class="col-12 col-sm-6">
+                            {{ forms.form_field(new_party_form.party_end_datetime, **{"onchange": "updatePreviewDate()"}) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            {{ forms.form_field(new_party_form.num_available_tickets, icon='<i class="fas fa-hashtag"></i>') }}
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
                             {{ forms.form_field(new_party_form.ticket_price, icon='<i class="fas fa-euro-sign"></i>') }}
                         </div>
+                        <div class="col-12 col-sm-12 col-md-4">
+                            {{ forms.form_field(new_party_form.club_owner_commission, icon='<i class="fas fa-percent"></i>') }}
+                        </div>
                     </div>
-                    {{ forms.form_field(new_party_form.submit) }}
+                    <div class="form-row">
+                        <div class="col-12 col-sm-6">
+                            {{ forms.form_field(new_party_form.image, **{"onchange": "readFile(this, 'party-img', 'bg-preview-text-image')"}) }}
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            {{ forms.form_field(new_party_form.logo, **{"onchange": "readFile(this, 'party-logo', 'bg-preview-text-logo')"}) }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        {{ forms.form_field(new_party_form.submit) }}
+                    </div>
                 </form>
             </div>
         </div>
@@ -35,12 +56,24 @@
     {% with new_party_form = new_party_form %}
         {% include "organizer/_preview_party_card.html" %}
     {% endwith %}
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
     <script>
-        const updatePreview = elem => {
+        const readFile = (input, target, placeholder) => {
+            let preview = document.getElementById(target);
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    preview.style.backgroundImage = `url(${e.target.result})`;
+                    preview.classList.remove(placeholder)
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.backgroundImage = 'none';
+                preview.classList.add(placeholder)
+            }
+        };
+    </script>
+    <script>
+        const updatePreviewTitle = elem => {
             let name = elem.name;
             let previewElem = document.getElementById('preview-'+name);
             if (name === "{{ new_party_form.title.name }}") {
@@ -51,5 +84,25 @@
                 }
             }
         };
+        Date.prototype.getShortMonth = function() {
+            let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[this.getMonth()];
+        };
+        const startTime = document.getElementById('{{ new_party_form.party_start_datetime.name }}');
+        const endTime = document.getElementById('{{ new_party_form.party_end_datetime.name }}');
+        const previewMonth = document.getElementById('preview-month');
+        const previewDay = document.getElementById('preview-day');
+        const displayTime = (start, end) => {
+              return (start.getHours()<10?'0':'')+start.getHours()+':'+(start.getMinutes()<10?'0':'')+start.getMinutes() + ' - ' +
+                  (end.getHours()<10?'0':'')+end.getHours()+':'+(end.getMinutes()<10?'0':'')+end.getMinutes()
+        };
+        const updatePreviewDate = () => {
+            let startDate = new Date(Date.parse(startTime.value));
+            let endDate = new Date(Date.parse(endTime.value));
+            previewDay.innerText = String(startDate.getDate());
+            previewMonth.innerText = String(startDate.getShortMonth());
+            let time = displayTime(startDate, endDate);
+            document.querySelectorAll('.preview-time').forEach(p => p.innerHTML = time);
+        }
     </script>
 {% endblock %}

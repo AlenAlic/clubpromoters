@@ -6,87 +6,93 @@
         <input type="search" id="search" class="form-control" placeholder="Search by name..." onkeyup="filterCards()">
         <label for="search"></label>
     </div>
-    <div class="mb-2 d-grid grid-column-gap-3 grid-row-gap-3">
+    <div class="mb-2 d-grid grid-template-columns-xxl-2 grid-column-gap-3 grid-row-gap-3">
         {% for party in g.active_parties %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">{{ party.title }}</h4>
-                    <div class="d-flex justify-content-between">
-                        <span class="font-weight-bold">Date:</span>
-                        <span class="text-right">
-                            {{ party.party_start_datetime.strftime("%A") }} {{ party.party_start_datetime.strftime("%b") }} {{ party.party_start_datetime.strftime("%d") }}<br/>
-                            {{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}
-                        </span>
+            <div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ party.title }}</h4>
+                        <div class="d-flex justify-content-between">
+                            <span class="font-weight-bold">Date:</span>
+                            <span class="text-right">
+                                {{ party.party_start_datetime.strftime("%A") }} {{ party.party_start_datetime.strftime("%b") }} {{ party.party_start_datetime.strftime("%d") }}<br/>
+                                {{ party.party_start_datetime.strftime("%H:%M") }} - {{ party.party_end_datetime.strftime("%H:%M") }}
+                            </span>
+                        </div>
+                        <div class="font-weight-bold">Tickets:</div>
+                        <div class="d-flex justify-content-between">
+                            <i>Made available:</i>
+                            <span class="text-right">{{ party.num_available_tickets }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <i>Currently sold:</i>
+                            <span class="text-right">{{ party.sold_tickets() }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <i>On hold:</i>
+                            <span class="text-right">{{ party.tickets_on_hold() }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <i>Remaining:</i>
+                            <span class="text-right">{{ party.remaining_tickets() }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="font-weight-bold">Current ticket price:</span>
+                            <span class="text-right">{{ g.values.format_euro(party.get_ticket_price()) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="font-weight-bold">Income generated:</span>
+                            <span class="text-right">{{ g.values.format_euro(party.party_potential_income()) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#modal-{{ party.party_id }}">Pause ticket sale</button>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-{{ party.party_id }}">View purchases</button>
+                        </div>
+                        <div class="collapse mt-3" id="collapse-{{ party.party_id }}">
+                            {% if party.paid_purchases()|length > 0 %}
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50%;">Name/Email</th>
+                                            <th style="width: 15%;">Tickets</th>
+                                            <th style="width: 20%;">Total price</th>
+                                            <th style="width: 15%;" class="text-right">Code</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for purchase in party.paid_purchases() %}
+                                        <tr>
+                                            <td>{{ purchase.name }}<br/>{{ purchase.email }}</td>
+                                            <td>{{ purchase.tickets|length }}</td>
+                                            <td>{{ g.values.format_euro(purchase.get_price()) }}</td>
+                                            <td class="text-right">{{ purchase.code }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>No tickets sold yet</p>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="font-weight-bold">Tickets:</div>
-                    <div class="d-flex justify-content-between">
-                        <i>Available:</i>
-                        <span class="text-right">{{ party.num_available_tickets }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <i>Sold:</i>
-                        <span class="text-right">{{ party.sold_tickets() }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <i>On hold:</i>
-                        <span class="text-right">{{ party.tickets_on_hold() }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <i>Remaining:</i>
-                        <span class="text-right">{{ party.remaining_tickets() }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="font-weight-bold">Ticket price:</span>
-                        <span class="text-right">{{ g.values.format_euro(party.ticket_price) }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mt-4">
-                        <button class="btn btn-primary">Pause ticket sale</button>
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-{{ party.party_id }}">View sold tickets</button>
-                    </div>
-                    <div class="collapse mt-3" id="collapse-{{ party.party_id }}">
-                        {% if party.paid_purchases()|length > 0 %}
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 30%;">Name</th>
-                                        <th style="width: 35%;">Email</th>
-                                        <th style="width: 10%;">Tickets</th>
-                                        <th style="width: 25%;" class="text-right">Code</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for purchase in party.paid_purchases() %}
-                                    <tr>
-                                        <td>{{ purchase.name }}</td>
-                                        <td>{{ purchase.email }}</td>
-                                        <td>{{ purchase.tickets|length }}</td>
-                                        <td class="text-right">{{ purchase.code }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% else %}
-                            <p>No tickets sold yet</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="modal" tabindex="-1" role="dialog" id="modal-{{ party.party_id }}">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Start ticket sale</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you wish to start the ticket sale for {{ party.title }}?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                <form class="form" method="POST" enctype="multipart/form-data" novalidate>
-                                    <button type="submit" class="btn btn-primary" name="start_ticket_sale" value="{{ party.party_id }}">Yes</button>
-                                </form>
+                    <div class="modal" tabindex="-1" role="dialog" id="modal-{{ party.party_id }}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Pause ticket sale</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you wish to pause the ticket sale for {{ party.title }}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    <form class="form" method="POST" enctype="multipart/form-data" novalidate>
+                                        <button type="submit" class="btn btn-primary" name="pause_ticket_sale" value="{{ party.party_id }}">Yes</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="bg-dark" style="min-height: 100vh;">
     {% for party in g.active_parties %}
         {% with party=party %}
-            <div class="my-5 py-5">
+            <div class="py-5">
                 {% include "organizer/_party_card.html" %}
             </div>
         {% endwith %}
@@ -16,4 +17,5 @@
             }
         }
     </script>
+    </div>
 {% endblock %}

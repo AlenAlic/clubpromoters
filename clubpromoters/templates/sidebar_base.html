@@ -6,6 +6,10 @@
             {% include '_sidebar_organization.html' %}
             {% include '_navbar.html' %}
         {% endif %}
+        {% if current_user.is_promoter() %}
+            {% include '_sidebar_promoter.html' %}
+            {% include '_navbar.html' %}
+        {% endif %}
 
         <div class="px-3 py-3">
         {% block app_content %}{% endblock %}

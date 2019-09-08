@@ -7,8 +7,9 @@ class TicketPurchase extends React.Component {
             tickets: this.props.tickets,
             email: "",
             emailError: "",
-            first_name: "",
-            readyToSubmit: false
+            name: "",
+            readyToSubmit: false,
+            checked: false
         };
     }
     componentWillMount() {
@@ -20,23 +21,36 @@ class TicketPurchase extends React.Component {
             this.setState({tickets: newValue});
         }
     }
-    handleSubmit(event) {
-        // event.preventDefault();
-        console.log(this.state)
-    }
-    updateEmail(event) {
-        clearTimeout(this.timer);
-        this.setState({email: event.target.value});
-        if (validateEmail(this.state.email)) {this.checkEmail()}
-        else {this.timer = setTimeout(this.checkEmail, WAIT_INTERVAL)}
-    }
-    checkEmail = () => {
-        const correctEmail = validateEmail(this.state.email);
-        this.setState({emailError: correctEmail ? "" : "Error", readyToSubmit: correctEmail})
-    };
     updateName(event) {
         this.setState({name: event.target.value});
     }
+    updateEmail(event) {
+        clearTimeout(this.timer);
+        const email = event.target.value;
+        this.setState({email: email});
+        if (validateEmail(email)) {this.checkEmail(email)}
+        else {this.timer = setTimeout(this.checkEmail, WAIT_INTERVAL, email)}
+    }
+    checkEmail = email => {
+        const correctEmail = validateEmail(email);
+        this.setState({emailError: correctEmail ? "" : "Error"}, () => {
+            this.checkReadyToSubmit()
+        });
+    };
+    updateCheckbox(event) {
+        const target = event.target;
+        this.setState({checked: target.checked}, () => {
+            this.checkReadyToSubmit()
+        });
+    };
+    checkReadyToSubmit = () => {
+        if (validateEmail(this.state.email) && this.state.name.replace(" ", "") !== "" && this.state.checked) {
+            this.setState({readyToSubmit: true});
+            return true
+        }
+        this.setState({readyToSubmit: false});
+        return false
+    };
 
     render() {
         const party = this.props.party;
@@ -44,7 +58,7 @@ class TicketPurchase extends React.Component {
 
         return (
             <div className="purchase-order">
-                <div className="card">
+                <div className="card mx-3 my-3">
                     <div className="card-body text-center">
                         <h4 className="card-title">Ticket purchase</h4>
                         <div className="left-right-split-container mt-3">
@@ -59,8 +73,7 @@ class TicketPurchase extends React.Component {
                             <span/>
                             <span>{party.party_time}</span>
                         </div>
-                        <form className="form" method="POST" encType="multipart/form-data" noValidate
-                              onSubmit={this.handleSubmit}>
+                        <form className="form" method="POST" encType="multipart/form-data" noValidate>
                             <div className="tickets-container mb-3 unselectable">
                                 <span className="party-title">Ticket(s)</span>
                                 <span className="party-counter">
@@ -95,6 +108,10 @@ class TicketPurchase extends React.Component {
                                 }
                             </div>
                             <input type="checkbox" className={"d-none"} name="purchase_tickets" value="" defaultChecked="checked" />
+                            <div className="form-group form-check">
+                                <input type="checkbox" className="form-check-input" id="terms" value={this.state.checked} onChange={() => this.updateCheckbox(event)} style={{"marginTop": "0.5rem"}}/>
+                                <label className="form-check-label" htmlFor="terms" style={{"fontSize": "0.65rem"}}>I have read, and accept the <a href="/terms" target="_blank">terms and conditions</a>.</label>
+                            </div>
                             <button type="submit" name="party_id" value={party.party_id}
                                     className={classNames("btn btn-dark my-3", {"disabled": !this.state.readyToSubmit})} disabled={!this.state.readyToSubmit}>Purchase ticket(s)
                             </button>

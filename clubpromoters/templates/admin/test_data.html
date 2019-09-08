@@ -7,10 +7,13 @@
                 <h4 class="card-title">Create test data</h4>
                 <form class="form" method="POST" enctype="multipart/form-data" novalidate>
                     <button class="btn btn-warning w-100 my-1" name="reset">Reset test data</button>
-                    <button class="btn btn-primary w-100 my-1" name="organizer" {% if test_check["organizer"] %}disabled{% endif %}>Create test Organizer account</button>
-                    <button class="btn btn-primary w-100 my-1" name="promoters" {% if test_check["promoters"] %}disabled{% endif %}>Create test Promoters accounts</button>
-                    <button class="btn btn-primary w-100 my-1" name="codes" {% if test_check["codes"] %}disabled{% endif %}>Create test Codes</button>
-                    <button class="btn btn-primary w-100 my-1" name="parties" {% if test_check["parties"] %}disabled{% endif %}>Create test Parties</button>
+                    <button class="btn btn-primary w-100 my-1" name="organizer" {% if test_check["organizer"] %}disabled{% endif %}>Create Organizer account</button>
+                    <button class="btn btn-primary w-100 my-1" name="club_owners" {% if test_check["club_owners"] %}disabled{% endif %}>Create Club Owner (and Hostess') account</button>
+                    <button class="btn btn-primary w-100 my-1" name="codes" {% if test_check["codes"] %}disabled{% endif %}>Create Codes</button>
+                    <button class="btn btn-primary w-100 my-1" name="promoters" {% if test_check["promoters"] or not test_check["codes"] %}disabled{% endif %}>Create Promoters accounts</button>
+                    <button class="btn btn-primary w-100 my-1" name="parties" {% if test_check["parties"] or not test_check["club_owners"] %}disabled{% endif %}>Create Parties</button>
+                    <button class="btn btn-primary w-100 my-1" name="purchases" {% if test_check["purchases"] or not test_check["parties"] %}disabled{% endif %}>Create Purchases</button>
+                    <button class="btn btn-primary w-100 my-1" name="refunds" {% if test_check["refunds"] or not test_check["purchases"] %}disabled{% endif %}>Create Refunds</button>
                 </form>
             </div>
         </div>

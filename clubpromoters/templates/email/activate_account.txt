@@ -1,10 +1,10 @@
 {%- from 'base.html' import brand_text -%}
-Dear {{ user.email }},
+Dear {{ user.username }},
 
 
-To activate your clubpromotors account, paste the following link in your browser's address bar, and set a password for your account:
+To activate your clubpromoters account, paste the following link in your browser's address bar, and set a password for your account:
 
-{{ url_for('auth.activate_account', token=token, _external=True) }}
+{{ url_for('auth.activate_account', token=user.activation_code, _external=True) }}
 
 
 Regards,
